@@ -1,5 +1,7 @@
 # PCBSGraph
  
+So since PCBSTools stopped, I thought that the graph idea was pretty good, so I did one myself. 
+
 How to use this :
 - The first select box is for changing the order of sorting (ascending/descending)
 - The second one is for switching between the CPU and GPU chart
