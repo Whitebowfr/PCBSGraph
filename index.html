@@ -26,15 +26,17 @@
         <input type="button" value="Refresh" onclick="updateGraph(true)">
         <div id="customCPU" style="display: inline-block;">
             <input type="number" placeholder="frequency">
-            <input type="button" value="Store" onclick="GRAPHstore(this.previousElementSibling.value); updateGraph(false)">
+            <input type="button" value="Store"
+                onclick="GRAPHstore(this.previousElementSibling.value); updateGraph(false)">
             <input type="number" placeholder="RAM speed" id="ram" oninput="updateGraph(false)">
         </div>
-        <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale" onclick="updateGraph(true)">
+        <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale"
+            onclick="updateGraph(true)">
         <input type="checkbox" id="autoUpdateInputs" title="Disable auto-updating of the chart (for performance)">
         <input type="checkbox" id="enableHEM" title="Show HEM Parts" checked onclick="updateGraph(false)">
         <div id="test">
-        <canvas id="myChart">
-        </canvas>
+            <canvas id="myChart">
+            </canvas>
         </div>
     </div>
     <script>
@@ -21915,7 +21917,7 @@
     }
 }
     </script>
-    
+
     <script>
         function id(id) { //simple function that reduce line size by a lot
             return document.getElementById(id)
@@ -21926,7 +21928,7 @@
         sessionStorage.clear()
         sessionStorage.setItem("freq", "[]")
         GRAPHupdateDropdown();
-        
+
         function GRAPHextractArray(array, type) {
             for (part in myData[type]) {
                 if (myData[type][part].inShop == "Yes" || myData[type][part].isInShop == "Yes" && myData[type][part].singleGPUGraphicsScore != 0) {
@@ -21951,8 +21953,8 @@
 
         function filterArray(array, key) {
             var temp = []
-            for(el in array) {
-                if(JSON.stringify(array[el]).toLowerCase().includes(key.toLowerCase())) {
+            for (el in array) {
+                if (JSON.stringify(array[el]).toLowerCase().includes(key.toLowerCase())) {
                     temp.push(array[el])
                 }
             }
@@ -21962,12 +21964,12 @@
         function GRAPHstore(value) {
             var alreadyEntered = JSON.parse(sessionStorage.getItem("freq"))
             if (myChart.data.labels.length > 1 && showMoreCPUs) {
-                if(!confirm("More than 1 CPU selected, storing for the first...")) {
+                if (!confirm("More than 1 CPU selected, storing for the first...")) {
                     showMoreCPUs = false
                 }
             }
-            for(cpu in alreadyEntered) {
-                if(alreadyEntered[cpu].name == myChart.data.labels[0]) {
+            for (cpu in alreadyEntered) {
+                if (alreadyEntered[cpu].name == myChart.data.labels[0]) {
                     alreadyEntered[cpu].freq = value
                     sessionStorage.setItem("freq", JSON.stringify(alreadyEntered))
                     return
@@ -22079,7 +22081,7 @@
             if (!priority && document.getElementById("autoUpdateInputs").checked) {
                 return false
             }
-            
+
             if (document.getElementById("logarithmicCheck").checked) {
                 scaleType = "logarithmic"
             } else {
@@ -22250,32 +22252,32 @@
             }
 
             var cpu1 = {
-                    label: "Max Frequency",
-                    data: maxFrequency,
-                    hidden: true,
-                    backgroundColor: 'rgba(215, 80, 160, 0.5)',
-                    borderColor: 'rgba(188,80,144,1)',
-                }
+                label: "Max Frequency",
+                data: maxFrequency,
+                hidden: true,
+                backgroundColor: 'rgba(215, 80, 160, 0.5)',
+                borderColor: 'rgba(188,80,144,1)',
+            }
             var cpu2 = {
-                    label: "Memory Speed",
-                    data: defaultMemory,
-                    hidden: true,
-                    backgroundColor: 'rgba(255, 49, 91, 0.5)',
-                    borderColor: 'rgba(239,86,117,1)',
-                }
+                label: "Memory Speed",
+                data: defaultMemory,
+                hidden: true,
+                backgroundColor: 'rgba(255, 49, 91, 0.5)',
+                borderColor: 'rgba(239,86,117,1)',
+            }
             var cpu3 = {
-                    label: "Price",
-                    data: price,
-                    hidden: true,
-                    backgroundColor: 'rgba(255, 124, 82, 0.5)',
-                    borderColor: 'rgba(255,101,52,1)',
-                }
+                label: "Price",
+                data: price,
+                hidden: true,
+                backgroundColor: 'rgba(255, 124, 82, 0.5)',
+                borderColor: 'rgba(255,101,52,1)',
+            }
             var cpu4 = {
-                    label: "Wattage",
-                    data: Watts,
-                    hidden: true,
-                    backgroundColor: 'rgba(255, 192, 75, 0.5)',
-                    borderColor: 'rgba(255,166,0,1)',
+                label: "Wattage",
+                data: Watts,
+                hidden: true,
+                backgroundColor: 'rgba(255, 192, 75, 0.5)',
+                borderColor: 'rgba(255,166,0,1)',
             }
 
             var chartData = {
@@ -22296,12 +22298,12 @@
             }
 
             if (type == "gpus") {
-                chartData.datasets.push(gpu,  gpu9, gpu8, cpu, cpu1, gpu6, gpu7, gpu5, cpu4, gpu1, gpu3,)
+                chartData.datasets.push(gpu, gpu9, gpu8, cpu, cpu1, gpu6, gpu7, gpu5, cpu4, gpu1, gpu3,)
             } else {
                 chartData.datasets.push(cpu, cpu1, cpu2, cpu3, cpu4)
             }
 
-            for(bar in chartData.datasets) {
+            for (bar in chartData.datasets) {
                 chartData.datasets[bar].barPercentage = 0.8
                 chartData.datasets[bar].borderWidth = 1
                 for (barBis in legendBase) {
@@ -22348,7 +22350,7 @@
                     },
                 }
             });
-            var countLegend = function(legend) {
+            var countLegend = function (legend) {
                 console.log(legend.text)
                 for (leg in legendBase) {
                     console.log(leg)
@@ -22365,4 +22367,5 @@
         updateGraph('')
     </script>
 </body>
+
 </html>
