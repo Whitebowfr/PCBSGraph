@@ -14,5 +14,15 @@ To reset the frequencies (you can store as much as you want), just reload the pa
 - The first checkbox is to enable/disable logarithmic scaling of the graph (switch between a linear and a logarithmic scale)
 - The second checkbox is to disable the auto-updating of the chart (so when you change things it doesnt update the chart. The only things that will update the chart no matter what are the sort order, the CPU/GPU selector, the type of sorting and the logarithmic scaling.
 - The last checkbox is to enable/disable HEM parts.
+- The first select in the filter section is to select which property you want to filter
+- The second select is to choose between equal, inferior or superior to the value you will enter (Sorry if it isn't very clear, go check it out yourself, it makes a lot more sense)
+- The last input is to enter the value you want to filter by.
+For example, if you select Score, < and enter 20000, it will show you every CPU that has a base score smaller than 20k.
 
 And you can also click on the legend label to show different datasets. (for example, clicking on Frequency will show/hide the frequency bar)
+
+To do :
+- make a better interface (change colors, inputs, etc)
+- add storage, RAM, motherboards, cooling
+- change where the data is stored (possibly to a server ?) so I can access it on each of my projects without having to store it in a gigantic var
+- add a compare system (with checkboxes ?)
