@@ -10,6 +10,10 @@
         body {
             background-color: rgb(80, 80, 80);
         }
+
+        #myChart {
+            cursor: pointer
+        }
     </style>
 </head>
 
@@ -37,19 +41,34 @@
         <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale" onclick="updateGraph(true)">
         <input type="checkbox" id="autoUpdateInputs" title="Disable auto-updating of the chart (for performance)">
         <input type="checkbox" id="enableHEM" title="Show HEM Parts" checked onclick="updateGraph(false)">
-        <span style="color: white">Filters :</span>
-        <select id="sortTypeFilter">
-        </select>
-        <select id="sortOrderFilter">
-            <option value="==">=</option>
-            <option value=">">></option>
-            <option value="<"><</option>
-        </select>
-        <input type="number" placeholder="value" oninput="updateGraph(false)" id="filterValue">
+        <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'inline-block' : 'none';" value="Show filters">
+        <div id="filters" style="background-color: white; border: 3px solid black; border-radius: 1px 1px 1px 1px; display: inline-block">
+            <span style="color: black">Filters :</span>
+            <select id="sortTypeFilter">
+            </select>
+            <select id="sortOrderFilter">
+                <option value="==">=</option>
+                <option value=">" selected>></option>
+                <option value="<"><</option>
+            </select>
+            <input type="number" placeholder="value" oninput="updateGraph(false)" id="filterValue">
+        </br>
+            <select id="sortTypeFilterBis" style="margin-left: 55px">
+            </select>
+            <select id="sortOrderFilterBis">
+                <option value="==">=</option>
+                <option value=">">></option>
+                <option value="<" selected><</option>
+            </select>
+            <input type="number" placeholder="second value (optional)" oninput="updateGraph(false)" id="filterValueBis">
+        </div>
         <div id="test">
             <canvas id="myChart">
             </canvas>
         </div>
+    </div>
+    <input type="button" id="backButton" style="width: 7%; height: 5%; display: none;" onclick="goBack('yes')" value="Back">
+    <div id="divPartShower" style="display: none;padding: 10px;width: 50%; border: 3px solid black; border-radius: 10px 10px 10px 10px; margin: 0 auto; text-align: center; background-color: lightgray;">
     </div>
     <script>
         function readTextFile(file, callback) { //stole this from stackoverflow, works like a charm
@@ -64,14 +83,89 @@
             rawFile.send(null);
         }
         var myData
-        readTextFile("helpers/data.json", function(text){
+        readTextFile("data.json", function(text){
             myData = JSON.parse(text);
             console.log(myData)
             updateGraph('')
         });
 
+        function showPartDetails(part) {
+            var type = document.getElementById("type").value
+            var partDetails = myData[type][part]
+            console.log(partDetails)
+            if (type == "cpus") {
+                var customText = `
+                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
+                    <div style="text-align: left;">
+                        <h3>
+                            Base frequency of this CPU : ${partDetails.maxFrequency} MHz
+                            <br> is overclockable : ${partDetails.canOverclock}
+                            <br> Max frequency (achievable by 100% of the chips at stock voltage) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency:"Can't OC"}
+                            <br> Theoric maximum frequency (with binning) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency*1.05:"Can't OC"}
+                            <br> Is this CPU in shop ? : ${partDetails.inShop}
+                            <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes":"No"}
+                            <br> Unlockation level : ${partDetails.level}
+                            <br> Max number of RAM sticks : ${partDetails.maxMemoryChannels}
+                            <br> Buy price : ${partDetails.price} $
+                            <br> Sell price : ${partDetails.sellPrice} $
+                            <br> Thermal throttling at : ${partDetails.thermalThrottling} °C
+                            <br> Max voltage : ${partDetails.voltage} V
+                            <br> Ultimate binning voltage : ${partDetails.maxVoltage} V
+                            <br> Wattage consumed : ${partDetails.wattage} W
+                            <br> Socket : ${partDetails.cpuSocket}
+                            <br> Processor series : ${partDetails.series}
+                        </h3>
+                    </div>
+                `
+            } else {
+                //var cc = partDetails.baseCoreClock
+                //var mc = partDetails.baseMemClock
+                //var mcc = partDetails.maxCoreClock
+                //var mmc = partDetails.maxMemClock
+                //<br> Theorical max core frequency (with binning) : ${maxOCGpuCoreClock}
+                //<br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
+                //var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
+                //var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100
+                var customText = `
+                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
+                    <div style="text-align: left;">
+                        <h3>
+                            Base core frequency : ${partDetails.baseCoreClock}
+                            <br> Base memory frequency : ${partDetails.baseMemClock}
+                            <br> Max core frequency : ${partDetails.maxCoreClock}
+                            <br> Max memory frequency : ${partDetails.maxMemClock}
+                            <br> Chipset : ${partDetails.chipset}
+                            <br> Chipset series : ${partDetails.chipsetSeries}
+                            <br> Chipset brand : ${partDetails.chipsetBrand}
+                            <br> Multi GPU support : ${partDetails.multiGpu}
+                            <br> VRAM (video RAM) : ${partDetails.vram} GB
+                            <br> Thermal throttling (bsod) at : ${partDetails.thermalThrottling} °C
+                            <br> Is this part in shop ? : ${partDetails.isInShop}
+                            <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes": "No"}
+                            <br> Buy price : ${partDetails.price}
+                            <br> Sell price : ${partDetails.sellPrice}
+                            <br> Unlocked at level : ${partDetails.level}
+                            <br> Wattage consumed (at stock speeds) : ${partDetails.wattage} W
+                            <br> GPU Cooling type : ${partDetails.gpuType}
+                            <br> Lighting : ${partDetails.lights == ""? "None":partDetails.lights}
+                        </h3>
+                    </div>
+                `
+            }
+            document.getElementById("divPartShower").innerHTML = customText
+        }
+
         function id(id) { //simple function that reduce line size by a lot
             return document.getElementById(id)
+        }
+
+        function goBack(e) {
+            if (e == 'yes' || e.key == "Escape") {
+                document.getElementById("divPartShower").style.display = "none"
+                document.getElementById("backButton").style.display = "none"
+                document.getElementById("divCPUGraph").style.display = "block"
+            }
+            window.removeEventListener("keyup", function (e) {goBack(e)})
         }
 
         var myChart
@@ -193,9 +287,11 @@
                     <option value="wattage">Wattage</option>
                     <option value="price">Price</option>
                     <option value="defaultMemorySpeed">Memory Speed</option>
+                    <option value="level">Level unlock</option>
                 `
             }
             document.getElementById("sortTypeFilter").innerHTML = score.innerHTML
+            document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
         }
 
         function GRAPHupdateHeight(lines) {
@@ -211,7 +307,9 @@
             var type = document.getElementById("type").value
             var score = document.getElementById("sortType")
             var filterValue = document.getElementById("filterValue").value
+            var filterValueBis = document.getElementById("filterValueBis").value
             var filterType = document.getElementById("sortTypeFilter").value
+            var filterTypeBis = document.getElementById("sortTypeFilterBis").value
 
             var basicScore = []
             var maxBasicScore = []
@@ -246,6 +344,7 @@
             if (keyWord != "") {
                 currentData = filterArray(currentData, keyWord)
             }
+
             if (filterValue != "") {
                 var sortOrder = document.getElementById("sortOrderFilter").value
                 if (sortOrder == "==") {
@@ -256,6 +355,18 @@
                     currentData = currentData.filter(part => part[filterType] < filterValue)
                 }
             }
+
+            if (filterValueBis != "") {
+                var sortOrder = document.getElementById("sortOrderFilterBis").value
+                if (sortOrder == "==") {
+                    currentData = currentData.filter(part => part[filterTypeBis] == filterValueBis)
+                } if (sortOrder == ">") {
+                    currentData = currentData.filter(part => part[filterTypeBis] > filterValueBis)
+                }if (sortOrder == "<") {
+                    currentData = currentData.filter(part => part[filterTypeBis] < filterValueBis)
+                }
+            }
+
 
             replacedCustom = currentData
 
@@ -317,6 +428,7 @@
                     price.push(replacedCustom[cpu].price)
                     Watts.push(replacedCustom[cpu].wattage)
                     fullName.push(replacedCustom[cpu].fullName)
+                    level.push(replacedCustom[cpu].level)
                 }
             } else {
                 for (gpu in replacedCustom) {
@@ -464,7 +576,7 @@
             if (type == "gpus") {
                 chartData.datasets.push(gpu,  gpu9, gpu8, cpu, cpu1, gpu6, gpu7, gpu5, cpu4, gpu1, gpu3,)
             } else {
-                chartData.datasets.push(cpu, cpu1, cpu2, cpu3, cpu4)
+                chartData.datasets.push(cpu, cpu1, cpu2, cpu3, cpu4, gpu3)
             }
 
             for(bar in chartData.datasets) {
@@ -534,6 +646,26 @@
                 console.log(legendBase)
             }
         }
+        document.getElementById("myChart").addEventListener("click", function (e) {
+            var spaceFromTop = window.pageYOffset + document.getElementById("myChart").getBoundingClientRect().top
+            var y = e.pageY - spaceFromTop
+            if (y <= myChart.boxes[0].height) {return false}
+            var tickNumber = parseInt(y/(myChart.boxes[3].height / myChart.boxes[3].ticks.length))
+            if (type.value == "cpus") {
+                tickNumber -= 1
+            } else {
+                tickNumber -= 2
+            }
+            var tickClicked = myChart.boxes[3].ticks[tickNumber]
+            console.log(tickClicked)
+            document.getElementById("divCPUGraph").style.display = "none"
+            document.getElementById("divPartShower").style.display = "block"
+            document.getElementById("backButton").style.display = "block"
+            window.addEventListener("keyup", function (e) {
+                goBack(e)
+            })
+            showPartDetails(tickClicked)
+        })
     </script>
 </body>
 </html>
