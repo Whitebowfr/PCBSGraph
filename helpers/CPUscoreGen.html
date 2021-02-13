@@ -32785,17 +32785,13 @@ CPU
 </table>
 
 <script>
-    function getResults(includeHEMParts) {
+    function getResults() {
 
         var results = {}
 
         // Process tables
         var data
         for (tableNumber = 0; tableNumber < 2; tableNumber++) {
-
-            // Skip HEM parts, if desired
-            if (tableNumber == 1 && !includeHEMParts)
-                continue
 
             data = document.getElementsByTagName('table')[tableNumber]
             for (row = 0; row < data.rows.length; row++) {
@@ -32820,12 +32816,21 @@ CPU
                 var inShop = data.rows[row].cells[9].innerText
                 var price = Number(data.rows[row].cells[10].innerText)
                 var sellPrice = Number(data.rows[row].cells[11].innerText)
-                var level = Number(data.rows[row].cells[12].innerText)
-                var frequency = Number(data.rows[row].cells[19].innerText)
+                var level = Number(data.rows[row].cells[12].innerText) + (Number(data.rows[row].cells[13].innerText / 100))
+                var chipset = data.rows[row].cells[17].innerText
+                var series = data.rows[row].cells[18].innerText
+				var frequency = Number(data.rows[row].cells[19].innerText)
+				var ScoreToValue = Number(data.rows[row].cells[21].innerText)
+				var coresNumber = Number(data.rows[row].cells[22].innerText)
                 var canOverclock = data.rows[row].cells[23].innerText
                 var wattage = Number(data.rows[row].cells[24].innerText)
+                var defaultVoltage = Number(data.rows[row].cells[25].innerText)
                 var defaultMemorySpeed = Number(data.rows[row].cells[26].innerText)
+                var thermalThrottling = Number(data.rows[row].cells[27].innerText)
                 var maxFreq = Number(data.rows[row].cells[28].innerText)
+                var maxVoltage = (Number(data.rows[row].cells[29].innerText) * 110 / 100) * 1.05
+                var stepIncrease = Number(data.rows[row].cells[32].innerText)
+                var diesNumber = Number(data.rows[row].cells[33].innerText)
                 var maxMemoryChannels = Number(data.rows[row].cells[35].innerText)
                 var cpuSocket = data.rows[row].cells[37].innerText
                 var coreClockMultiplier = Number(data.rows[row].cells[47].innerText)
@@ -32874,13 +32879,21 @@ CPU
                 results[fullName].inShop = inShop
                 results[fullName].isHEMPart = isHEMPart
                 results[fullName].price = price
+                results[fullName].sellPrice = sellPrice
+				results[fullName].level = level
+				results[fullName].chipset = chipset
+				results[fullName].series = series
+				results[fullName].dies = diesNumber
+				results[fullName].ocCapable = canOverclock
                 results[fullName].frequency = frequency
                 results[fullName].maxFrequency = maxFreq
                 results[fullName].basicCPUScore = basicCPUScore
                 results[fullName].maxCPUScore = maxScoreOC
                 results[fullName].canOverclock = canOverclock
                 results[fullName].wattage = wattage
-                //results[fullName].voltage = voltage
+                results[fullName].voltage = defaultVoltage
+                results[fullName].maxVoltage = maxVoltage
+                results[fullName].thermalThrottling = thermalThrottling
                 results[fullName].defaultMemorySpeed = defaultMemorySpeed
                 results[fullName].maxMemoryChannels = maxMemoryChannels
                 results[fullName].cpuSocket = cpuSocket

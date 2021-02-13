@@ -18220,7 +18220,6 @@ GPU
 	</tr>
 </table>
 
-
 Water Cooled GPU
 <table>
 	<tr>
@@ -38423,17 +38422,31 @@ Water Cooled GPU
                 var GT2DCC = Number(data.rows[row].cells[62].innerText)
                 var GT2DMC = Number(data.rows[row].cells[63].innerText)
                 var GT2DBA = Number(data.rows[row].cells[64].innerText)
+
+				if (data.rows[row].cells[37].innerText == "Yes") {
+					if (data.rows[row].cells[36].innerText == "Yes") {
+						var multiGpu = "SLI"
+					} else {
+						var multiGpu = "Crossfire"
+					}
+				} else {
+					var multiGpu = "None"
+				}
                 
 
                 var manufacturer = data.rows[row].cells[3].innerText
                 var partName = data.rows[row].cells[5].innerText
                 var inShop = data.rows[row].cells[9].innerText
                 var price = Number(data.rows[row].cells[10].innerText)
+                var sellPrice = Number(data.rows[row].cells[11].innerText)
                 var level = insertDecimal(data.rows[row].cells[12].innerText, data.rows[row].cells[13].innerText)
+                var chipset = data.rows[row].cells[20].innerText
+                var chipsetBrand = data.rows[row].cells[21].innerText
                 var chipsetSeries = data.rows[row].cells[22].innerText
                 var vramGB = Number(data.rows[row].cells[25].innerText)
                 var wattage = Number(data.rows[row].cells[27].innerText)
                 var scoreToValue = Number(data.rows[row].cells[29].innerText)
+                var thermalThrottling = Number(data.rows[row].cells[40].innerText)
                 var baseCoreClockFreq = Number(data.rows[row].cells[31].innerText)
                 var baseMemClockFreq = Number(data.rows[row].cells[32].innerText)
                 var maxCoreClockFreq = Number(data.rows[row].cells[41].innerText)
@@ -38442,7 +38455,7 @@ Water Cooled GPU
                 var singleGPUMaxGraphicsScore = getGPUScore(GT1SCC, GT1SMC, GT1SBA, GT2SCC, GT2SMC, GT2SBA, maxCoreClockFreq, maxMemClockFreq)
                 var dualGPUGraphicsScore = getGPUScore(GT1DCC, GT1DMC, GT1DBA, GT2DCC, GT2DMC, GT2DBA, baseCoreClockFreq, baseMemClockFreq)
                 var dualGPUMaxGraphicsScore = getGPUScore(GT1DCC, GT1DMC, GT1DBA, GT2DCC, GT2DMC, GT2DBA, maxCoreClockFreq, maxMemClockFreq)
-                var lightning = data.rows[row].cells[50].innerText
+                var lightning = data.rows[row].cells[51].innerText
 
                 var isHEMPart = (tableNumber == 2 || tableNumber == 3)
                 var fullName = manufacturer + " " + partName
@@ -38486,11 +38499,16 @@ Water Cooled GPU
                 results[fullName].fullName = fullName
                 results[fullName].isHEMPart = isHEMPart
                 results[fullName].price = price
+                results[fullName].sellPrice = sellPrice
                 results[fullName].level = level
-                results[fullName].chipset = chipsetSeries
+                results[fullName].chipset = chipset
+                results[fullName].chipsetBrand = chipsetBrand
+                results[fullName].chipsetSeries = chipsetSeries
+                results[fullName].multiGpu = multiGpu
                 results[fullName].vram = vramGB
                 results[fullName].watts = wattage
                 results[fullName].stv = scoreToValue
+                results[fullName].thermalThrottling = thermalThrottling
                 results[fullName].baseCoreClock = baseCoreClockFreq
                 results[fullName].baseMemClock = baseMemClockFreq
                 results[fullName].maxCoreClock = maxCoreClockFreq
