@@ -26,8 +26,9 @@ To use the offline version, download the file here : https://raw.githubuserconte
 To do :
 - [ ] make a better interface (change colors, inputs, etc) (please help I don't have any ideas)
 - [ ] add storage, RAM, motherboards, cooling
-- [x] change where the data is stored (possibly to a server ?) so I can access it on each of my projects without having to store it in a gigantic var
+- [x] ~~change where the data is stored (possibly to a server ?) so I can access it on each of my projects without having to store it in a gigantic var~~
 - [ ] add a compare system (with checkboxes ?)
-- [x] add a second filter so we can combine and search more precisely
+- [x] ~~add a second filter so we can combine and search more precisely~~
 - [ ] change the search system to, instead of showing only the parts, scroll to them (kind of like in the part ranking app) (maybe with a toggle checkbox ?)
 - [ ] Probably one of the biggest changes : clicking on a cpu/motherboard/ram show a page (kind of like in the old shop app) where you can see detailed information and compatible ram/cpu/sockets (still WIP)
+- [ ] Add some kind of overclock calculator on the part details page
