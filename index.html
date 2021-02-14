@@ -28,6 +28,9 @@
         <select id="type" onchange="GRAPHupdateDropdown(this.value), updateGraph(true)">
             <option value="cpus">CPUs</option>
             <option value="gpus">GPUs</option>
+            <option value="ram">RAM</option>
+            <option value="mobos">Motherboards</option>
+            <option value="storage">Storage</option>
         </select>
         <select id="sortType" onchange="updateGraph(true)">
         </select>
@@ -117,7 +120,7 @@
                         </h3>
                     </div>
                 `
-            } else {
+            } if (type == "gpus") {
                 //var cc = partDetails.baseCoreClock
                 //var mc = partDetails.baseMemClock
                 //var mcc = partDetails.maxCoreClock
@@ -151,6 +154,25 @@
                         </h3>
                     </div>
                 `
+            } if (type == "ram") {
+                var customText = `
+                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
+                        <div style="text-align: left;">
+                            <h3>
+                                Base frequency : ${partDetails.frequency}
+                                <br> Max frequency : ${partDetails.maxFrequency}
+                                <br> Manufacturer : ${partDetails.manufacturer}
+                                <br> Size of one stick : ${partDetails.totalSizeGB}
+                                <br> Type of RAM : ${partDetails.ramType}
+                                <br> Buy price : ${partDetails.price}
+                                <br> Sale price : ${partDetails.sellPrice}
+                                <br> Unlocked at level : ${partDetails.level}
+                                <br> Lightning : ${partDetails.lightning}
+                                <br> Base voltage : ${partDetails.voltage}
+                                <br> Max voltage (in base game) : ${partDetails.maxVoltage}
+                            </h3>
+                        </div>
+                `
             }
             document.getElementById("divPartShower").innerHTML = customText
         }
@@ -169,10 +191,10 @@
         }
 
         var myChart
-        var legendBase = ["Score", "Part Ranking"]
+        var legendBase = []
         sessionStorage.clear()
         sessionStorage.setItem("freq", "[]")
-        GRAPHupdateDropdown();
+        GRAPHupdateDropdown("cpus");
         
         function GRAPHextractArray(array, type) {
             for (part in myData[type]) {
@@ -276,7 +298,7 @@
                     <option value="partRankingScore">Part Ranking</option>
                     <option value="gpuType">Cooling type</option>
                 `
-            } else {
+            } if (type == "cpus") {
                 document.getElementById("customCPU").style.display = "inline-block"
                 score.innerHTML = `
                     <option value="manufacturer">Manufacturer</option>
@@ -289,6 +311,21 @@
                     <option value="defaultMemorySpeed">Memory Speed</option>
                     <option value="level">Level unlock</option>
                 `
+            } if (type == "ram") {
+                document.getElementById("customCPU").style.display = "none"
+                score.innerHTML = `
+                    <option value="manufacturer">Manufacturer</option>
+                    <option value="frequency" selected>Frequency</option>
+                    <option value="maxFreq">Max OC freq</option>
+                    <option value="pricePerGig">Price per gigabyte</option>
+                    <option value="level">Level unlock</option>
+                    <option value="price">Buy price</option>
+                    <option value="sellPrice">Sell price</option>
+                `
+            } if (type == "mobos") {
+                document.getElementById("customCPU").style.display = "none"
+            } if (type == "storage") {
+                document.getElementById("customCPU").style.display = "none"
             }
             document.getElementById("sortTypeFilter").innerHTML = score.innerHTML
             document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
@@ -321,6 +358,7 @@
             var maxFrequency = []
             var wattage = []
             var price = []
+            var sellPrice = []
             var defaultMemory = []
             var Watts = []
             var level = []
@@ -430,7 +468,7 @@
                     fullName.push(replacedCustom[cpu].fullName)
                     level.push(replacedCustom[cpu].level)
                 }
-            } else {
+            } if (type == "gpus") {
                 for (gpu in replacedCustom) {
                     price.push(replacedCustom[gpu].price)
                     frequency.push(replacedCustom[gpu].baseCoreClock)
@@ -447,6 +485,19 @@
                     dualScore.push(replacedCustom[gpu].doubleGPUGraphicsScore)
                     maxDualScore.push(replacedCustom[gpu].doubleGPUMaxGraphicsScore)
                 }
+            } if (type == "ram") {
+                var size = []
+                var pricePerGig = []
+                for (ram in replacedCustom) {
+                    price.push(replacedCustom[ram].price)
+                    sellPrice.push(replacedCustom[ram].sellPrice)
+                    frequency.push(replacedCustom[ram].frequency)
+                    maxFrequency.push(replacedCustom[ram].maxFrequency)
+                    pricePerGig.push(replacedCustom[ram].pricePerGig)
+                    level.push(replacedCustom[ram].level)
+                    fullName.push(replacedCustom[ram].fullName)
+                    size.push(replacedCustom[ram].totalSizeGB)
+                }
             }
 
             if (myChart != undefined) {
@@ -455,128 +506,143 @@
             }
 
 
-            var gpu = {
+            var dualScoreData = {
                 label: "Dual GPU Score",
                 data: dualScore,
                 hidden: true,
                 backgroundColor: 'rgba(102, 81, 145, 0.5)',
                 borderColor: 'rgba(120,88,186,1)',
             }
-
-            var gpu1 = {
-                label: "Price",
-                data: price,
-                hidden: true,
-                backgroundColor: 'rgba(240, 195, 70, 0.5)',
-                borderColor: 'rgba(255,202,14,1)',
-            }
-
-            var gpu3 = {
+            var levelData = {
                 label: "Level",
                 data: level,
                 hidden: true,
                 backgroundColor: 'rgba(207, 205, 9, 0.5)',
                 borderColor: 'rgba(224,223,91,1)',
             }
-
-            var gpu5 = {
+            var vramData = {
                 label: "VRAM",
                 data: vram,
                 hidden: true,
                 backgroundColor: 'rgba(255, 124, 67, 0.5)',
                 borderColor: 'rgba(255,144,96,1)',
             }
-
-            var gpu6 = {
+            var memClockData = {
                 label: "Memory Clock",
                 data: memClock,
                 hidden: true,
                 backgroundColor: 'rgba(249, 93, 106, 0.5)',
                 borderColor: 'rgba(249,115,126,1)',
             }
-
-            var gpu7 = {
+            var ocMemClockData = {
                 label: "Max Memory Clock",
                 data: maxMemClock,
                 hidden: true,
                 backgroundColor: 'rgba(250, 81, 52, 0.5)',
                 borderColor: 'rgba(252,117,94,1)',
             }
-
-            var gpu8 = {
+            var ocSingleScoreData = {
                 label: "OC score",
                 data: maxBasicScore,
                 hidden: true,
                 backgroundColor: 'rgba(212, 80, 135, 0.5)',
                 borderColor: 'rgba(230,80,143,1)',
             }
-
-            var gpu9 = {
+            var ocDualScoreData = {
                 label: "OC Dual GPU Score",
                 data: maxDualScore,
                 hidden: true,
                 backgroundColor: 'rgba(191, 67, 174, 0.5)',
                 borderColor: 'rgba(198,71,180,1)',
             }
-
-            var cpu = {
+            var freqData = {
                 label: "Frequency",
                 data: frequency,
                 hidden: true,
                 backgroundColor: 'rgba(160, 100, 199, 0.5)',
                 borderColor: 'rgba(122,81,149,1)',
             }
-
-            var cpu1 = {
+            var maxFreqData = {
                     label: "Max Frequency",
                     data: maxFrequency,
                     hidden: true,
                     backgroundColor: 'rgba(215, 80, 160, 0.5)',
                     borderColor: 'rgba(188,80,144,1)',
                 }
-            var cpu2 = {
+            var defaultMemoryData = {
                     label: "Memory Speed",
                     data: defaultMemory,
                     hidden: true,
                     backgroundColor: 'rgba(255, 49, 91, 0.5)',
                     borderColor: 'rgba(239,86,117,1)',
                 }
-            var cpu3 = {
+            var priceData = {
                     label: "Price",
                     data: price,
                     hidden: true,
                     backgroundColor: 'rgba(255, 124, 82, 0.5)',
                     borderColor: 'rgba(255,101,52,1)',
                 }
-            var cpu4 = {
+            var wattageData = {
                     label: "Wattage",
                     data: Watts,
                     hidden: true,
                     backgroundColor: 'rgba(255, 192, 75, 0.5)',
                     borderColor: 'rgba(255,166,0,1)',
             }
+            var sellPriceData = {
+                label: "Sell price",
+                data: sellPrice,
+                hidden: true,
+                backgroundColor: 'rgba(255, 255, 0, 0.5)',
+                borderColor: 'rgba(200, 200, 0)',
+            }
+            var pricePerGigData = {
+                label: "Price per gigabyte",
+                data: pricePerGig,
+                hidden: true,
+                backgroundColor: 'rgba(191, 67, 174, 0.5)',
+                borderColor : 'rgba(198,71,180,1)',
+            }
+            var sizeData = {
+                label: "Total size (GB)",
+                data: size,
+                hidden: true,
+                backgroundColor: 'rgba(212, 80, 135, 0.5)',
+                borderColor: 'rgba(230,80,143,1)',
+            }
+            var scoreData = {
+                label: "Score",
+                hidden: true,
+                data: basicScore,
+                backgroundColor: 'rgba(0, 143, 209, 0.5)',
+                borderColor: 'rgba(0,63,92,1)',
+            }
+            var partRankingData = {
+                label: "Part Ranking",
+                data: partRanking,
+                hidden: true,
+                backgroundColor: "rgba(79, 111,189,0.5)",
+                borderColor: "rgba(55,76,128,1)",
+            }
+            //dualScoreData, vramData, memClockData, ocMemClockData, ocSingleScoreData, ocDualScoreData, scoreData, partRankingData
+            //levelData, priceData, sellPriceData, freqData, maxFreqData, defaultMemoryData, wattageData, pricePerGigData, sizeData
+
 
             var chartData = {
                 labels: fullName,
-                datasets: [{
-                    label: "Score",
-                    hidden: true,
-                    data: basicScore,
-                    backgroundColor: 'rgba(0, 143, 209, 0.5)',
-                    borderColor: 'rgba(0,63,92,1)',
-                }, {
-                    label: "Part Ranking",
-                    data: partRanking,
-                    hidden: true,
-                    backgroundColor: "rgba(79, 111,189,0.5)",
-                    borderColor: "rgba(55,76,128,1)",
-                }]
+                datasets: []
             }
 
             if (type == "gpus") {
-                chartData.datasets.push(gpu,  gpu9, gpu8, cpu, cpu1, gpu6, gpu7, gpu5, cpu4, gpu1, gpu3,)
-            } else {
-                chartData.datasets.push(cpu, cpu1, cpu2, cpu3, cpu4, gpu3)
+                chartData.datasets.push(scoreData, ocSingleScoreData,  partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData)
+                legendBase.push("Score", "Part Ranking")
+            } if (type == "cpus") {
+                chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData)
+                legendBase.push("Score", "Part Ranking")
+            } if (type == "ram") {
+                chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData)
+                legendBase.push("Frequency", "Total size (GB)")
             }
 
             for(bar in chartData.datasets) {
