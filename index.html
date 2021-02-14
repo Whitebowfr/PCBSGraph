@@ -173,6 +173,25 @@
                             </h3>
                         </div>
                 `
+            } if(type == "mobos") {
+                var customText = `
+                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
+                        <div style="text-align: left;">
+                            <h3>
+                                Socket : ${partDetails.cpuSocket}
+                                <br> Chipset : ${partDetails.chipset}
+                                <br> Support overclocking : ${partDetails.canOverclock}
+                                <br> Number of RAM slots : ${partDetails.ramSlots}
+                                <br> Type of RAM : ${partDetails.ramType}
+                                <br> Buy price : ${partDetails.price}
+                                <br> Sale price : ${partDetails.sellPrice}
+                                <br> Unlocked at level : ${partDetails.level}
+                                <br> Lightning : ${partDetails.lightning}
+                                <br> Support SLI : ${partDetails.supportSLI}
+                                <br> Support Crossfire : ${partDetails.supportCrossfire}
+                            </h3>
+                        </div>
+                `
             }
             document.getElementById("divPartShower").innerHTML = customText
         }
@@ -324,6 +343,21 @@
                 `
             } if (type == "mobos") {
                 document.getElementById("customCPU").style.display = "none"
+                score.innerHTML = `
+                    <option value="manufacturer">Manufacturer</option>
+                    <option value="cpuSocket">Socket</option>
+                    <option value="chipset">Chipset</option>
+                    <option value="level">Level unlocked</option>
+                    <option value="price">Buy price</option>
+                    <option value="sellPrice">Sell price</option>
+                    <option value="motherboardSize">Motherboard form factor</option>
+                    <option value="defaultMemorySpeed">Default memory speed</option>
+                    <option value="maxMemorySpeed">Max memory speed</option>
+                    <option value="ramType">Ram type</option>
+                    <option value="m2Slots">M.2 Slots number</option>
+                    <option value="m2SlotsSupportingHeatsinks">M.2 Slots supporting heatsinks</option>
+                    <option value="ramSlots">RAM slots</option>
+                `
             } if (type == "storage") {
                 document.getElementById("customCPU").style.display = "none"
             }
@@ -498,6 +532,19 @@
                     fullName.push(replacedCustom[ram].fullName)
                     size.push(replacedCustom[ram].totalSizeGB)
                 }
+            } if (type == "mobos") {
+                var M2Slots = []
+                var M2SlotsHeatSink = []
+                for (mobo in replacedCustom) {
+                    maxFrequency.push(replacedCustom[mobo].maxMemorySpeed)
+                    price.push(replacedCustom[mobo].price)
+                    sellPrice.push(replacedCustom[mobo].sellPrice)
+                    frequency.push(replacedCustom[mobo].defaultMemorySpeed)
+                    level.push(replacedCustom[mobo].level)
+                    M2Slots.push(replacedCustom[mobo].m2Slots)
+                    M2SlotsHeatSink.push(replacedCustom[mobo].m2SlotsSupportingHeatsinks)
+                    fullName.push(replacedCustom[mobo].fullName)
+                }
             }
 
             if (myChart != undefined) {
@@ -625,6 +672,20 @@
                 backgroundColor: "rgba(79, 111,189,0.5)",
                 borderColor: "rgba(55,76,128,1)",
             }
+            var m2SlotsData = {
+                label: "M2 Slots",
+                data: M2Slots,
+                hidden: true,
+                backgroundColor: 'rgba(191, 67, 174, 0.5)',
+                borderColor: 'rgba(198,71,180,1)'
+            }
+            var m2SlotsHeatData = {
+                label: "M2 Slots supporting heatsinks",
+                data: M2SlotsHeatSink,
+                hidden: true,
+                backgroundColor: 'rgba(212, 80, 135, 0.5)',
+                borderColor: 'rgba(230,80,143,1)'
+            }
             //dualScoreData, vramData, memClockData, ocMemClockData, ocSingleScoreData, ocDualScoreData, scoreData, partRankingData
             //levelData, priceData, sellPriceData, freqData, maxFreqData, defaultMemoryData, wattageData, pricePerGigData, sizeData
 
@@ -643,6 +704,9 @@
             } if (type == "ram") {
                 chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData)
                 legendBase.push("Frequency", "Total size (GB)")
+            } if (type == "mobos") {
+                chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData,)
+                legendBase.push("Price")
             }
 
             for(bar in chartData.datasets) {
