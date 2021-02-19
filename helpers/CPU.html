@@ -32810,6 +32810,12 @@ CPU
                 if (data.rows[row].cells[3].innerText == "Manufacturer") {
                     continue
                 }
+				var iconPath = data.rows[row].cells[42].innerText
+				if (iconPath == "" || iconPath == null) {
+					iconPath = data.rows[row].cells[41].innerText
+				}
+				iconPath = iconPath.split("/")
+				iconPath = iconPath[iconPath.length - 1]
 
                 var manufacturer = data.rows[row].cells[3].innerText
                 var partName = data.rows[row].cells[5].innerText
@@ -32902,6 +32908,7 @@ CPU
                 results[fullName].memClockMultiplier = memClockMultiplier
                 results[fullName].finalAdjustment = finalAdjustment
                 results[fullName].partRankingScore = partRankingScore
+				results[fullName].iconPath = iconPath
             }
         }
 

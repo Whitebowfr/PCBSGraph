@@ -4686,6 +4686,10 @@ Storage
                     continue
                 }
 
+			    var iconPath = data.rows[row].cells[27].innerText
+				iconPath = iconPath.split("/")
+				iconPath = iconPath[iconPath.length - 1]
+
                 var manufacturer = data.rows[row].cells[3].innerText
                 var partName = data.rows[row].cells[5].innerText
                 var inShop = data.rows[row].cells[9].innerText
@@ -4717,6 +4721,7 @@ Storage
                 results[fullName].includesHeatsink = includesHeatsink
                 results[fullName].heatsinkThickness = heatsinkThickness
                 results[fullName].lightning = lights
+                results[fullName].iconPath = iconPath
             }
         }
 

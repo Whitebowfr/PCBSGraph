@@ -10867,6 +10867,14 @@ Motherboard
                     continue
                 }
 
+                var iconPath = data.rows[row].cells[35].innerText
+				if (iconPath == "" || iconPath == null) {
+					iconPath = data.rows[row].cells[34].innerText
+				}
+
+				iconPath = iconPath.replaceAll("\\", "/").split("/")
+				iconPath = iconPath[iconPath.length - 1]
+
                 var manufacturer = data.rows[row].cells[3].innerText
                 var partName = data.rows[row].cells[5].innerText
                 var inShop = data.rows[row].cells[9].innerText
@@ -10923,6 +10931,7 @@ Motherboard
                 results[fullName].ramSlots = ramSlots
                 results[fullName].sataSlots = sataSlots
                 results[fullName].lightning = lightning
+                results[fullName].iconPath = iconPath
             }
         }
 

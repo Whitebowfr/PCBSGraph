@@ -12573,6 +12573,13 @@ RAM
                     continue
                 }
 
+                var iconPath = data.rows[row].cells[33].innerText
+				if (iconPath == "" || iconPath == null) {
+					iconPath = data.rows[row].cells[32].innerText
+				}
+				iconPath = iconPath.split("/")
+				iconPath = iconPath[iconPath.length - 1]
+
                 var manufacturer = data.rows[row].cells[3].innerText
                 var partName = data.rows[row].cells[5].innerText
                 var inShop = data.rows[row].cells[9].innerText
@@ -12608,6 +12615,7 @@ RAM
                 results[fullName].maxVoltage = maxVoltage
                 results[fullName].lightning = lights
                 results[fullName].pricePerGig = pricePerGig
+                results[fullName].iconPath = iconPath
             }
         }
 
