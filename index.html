@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCBS Graph</title>
+    <title>PCBS Graph v0.5.0</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/flat_round/64/000000/bar-chart--v1.png" />
     <style>
         body {
@@ -71,7 +71,7 @@
         </div>
     </div>
     <input type="button" id="backButton" style="width: 7%; height: 5%; display: none;" onclick="goBack('yes')" value="Back">
-    <div id="divPartShower" style="display: none;padding: 10px;width: 50%; border: 3px solid black; border-radius: 10px 10px 10px 10px; margin: 0 auto; text-align: center; background-color: lightgray;">
+    <div id="divPartShower" style="display: none;padding: 10px;width: 70%; border: 3px solid black; border-radius: 10px 10px 10px 10px; margin: 0 auto; text-align: center; background-color: lightgray;">
     </div>
     <script>
         function readTextFile(file, callback) { //stole this from stackoverflow, works like a charm
@@ -92,6 +92,14 @@
             updateGraph('')
         });
 
+        function imageExists(image_url){
+            var http = new XMLHttpRequest();
+            http.open('HEAD', image_url, false);
+            http.send();
+            console.log(image_url)
+            return http.status != 404;
+        }
+
         function showPartDetails(part) {
             var type = document.getElementById("type").value
             var partDetails = myData[type][part]
@@ -99,7 +107,7 @@
             if (type == "cpus") {
                 var customText = `
                     <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                    <div style="text-align: left;">
+                    <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                         <h3>
                             Base frequency of this CPU : ${partDetails.maxFrequency} MHz
                             <br> is overclockable : ${partDetails.canOverclock}
@@ -131,7 +139,7 @@
                 //var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100
                 var customText = `
                     <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                    <div style="text-align: left;">
+                    <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                         <h3>
                             Base core frequency : ${partDetails.baseCoreClock}
                             <br> Base memory frequency : ${partDetails.baseMemClock}
@@ -157,7 +165,7 @@
             } if (type == "ram") {
                 var customText = `
                     <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                        <div style="text-align: left;">
+                        <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                             <h3>
                                 Base frequency : ${partDetails.frequency}
                                 <br> Max frequency : ${partDetails.maxFrequency}
@@ -176,7 +184,7 @@
             } if(type == "mobos") {
                 var customText = `
                     <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                        <div style="text-align: left;">
+                        <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                             <h3>
                                 Socket : ${partDetails.cpuSocket}
                                 <br> Chipset : ${partDetails.chipset}
@@ -192,7 +200,36 @@
                             </h3>
                         </div>
                 `
+            } if (type == "storage") {
+                var customText = `
+                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
+                        <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
+                            <h3>
+                                Total size (in GB) : ${partDetails.sizeGB}
+                                <br> Transfer speed : ${partDetails.speed}
+                                <br> Manufacturer : ${partDetails.manufacturer}
+                                <br> Price : ${partDetails.price}
+                                <br> Sell price : ${partDetails.sellPrice}
+                                <br> Unlocked at level : ${partDetails.level}
+                                <br> Type : ${partDetails.type}
+                                <br> Uses heatsink : ${partDetails.includesHeatsink}
+                                <br> Heatsink T H I C Cness: ${partDetails.heatsinkThickness}
+                                <br> Lightning : ${partDetails.lightning}
+                            </h3>
+                        </div>
+                `
             }
+            if (imageExists("imagesBackup/Texture2D/" + partDetails.iconPath + ".png")) {
+                    customText += `
+                    <div style="display: inline-block">
+                        <img src="imagesBackup/Texture2D/${partDetails.iconPath}.png"></img>
+                    </div>`
+                } else {
+                    customText += `
+                    <div style="display: inline-block">
+                        <img src="imagesBackup/Texture2D/ERROR_NOT_FOUND.png"></img>
+                    </div>`
+                }
             document.getElementById("divPartShower").innerHTML = customText
         }
 
@@ -340,13 +377,14 @@
                     <option value="level">Level unlock</option>
                     <option value="price">Buy price</option>
                     <option value="sellPrice">Sell price</option>
+                    <option value="totalSizeGb">Size</option>
                 `
             } if (type == "mobos") {
                 document.getElementById("customCPU").style.display = "none"
                 score.innerHTML = `
                     <option value="manufacturer">Manufacturer</option>
                     <option value="cpuSocket">Socket</option>
-                    <option value="chipset">Chipset</option>
+                    <option value="chipset" selected>Chipset</option>
                     <option value="level">Level unlocked</option>
                     <option value="price">Buy price</option>
                     <option value="sellPrice">Sell price</option>
@@ -360,6 +398,14 @@
                 `
             } if (type == "storage") {
                 document.getElementById("customCPU").style.display = "none"
+                score.innerHTML = `
+                    <option value="manufacturer">Manufacturer</option>
+                    <option value="level">Level unlocked</option>
+                    <option value="price">Buy price</option>
+                    <option value="sellPrice">Sell price</option>
+                    <option value="size">Total size</option>
+                    <option value="speed" selected>Transfer speed</option>
+                `
             }
             document.getElementById("sortTypeFilter").innerHTML = score.innerHTML
             document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
@@ -545,6 +591,17 @@
                     M2SlotsHeatSink.push(replacedCustom[mobo].m2SlotsSupportingHeatsinks)
                     fullName.push(replacedCustom[mobo].fullName)
                 }
+            } if (type == "storage") {
+                var size = []
+                var transferSpeed = []
+                for (s in replacedCustom) {
+                    price.push(replacedCustom[s].price)
+                    sellPrice.push(replacedCustom[s].sellPrice)
+                    size.push(replacedCustom[s].sizeGB)
+                    fullName.push(replacedCustom[s].fullName)
+                    level.push(replacedCustom[s].level)
+                    transferSpeed.push(replacedCustom[s].speed)
+                }
             }
 
             if (myChart != undefined) {
@@ -686,8 +743,16 @@
                 backgroundColor: 'rgba(212, 80, 135, 0.5)',
                 borderColor: 'rgba(230,80,143,1)'
             }
+            var transferSpeedData = {
+                label: "Transfer speed",
+                data: transferSpeed,
+                hidden: true,
+                backgroundColor: "rgba(79, 111,189,0.5)",
+                borderColor: "rgba(55,76,128,1)"
+            }
             //dualScoreData, vramData, memClockData, ocMemClockData, ocSingleScoreData, ocDualScoreData, scoreData, partRankingData
             //levelData, priceData, sellPriceData, freqData, maxFreqData, defaultMemoryData, wattageData, pricePerGigData, sizeData
+            // transferSpeedData
 
 
             var chartData = {
@@ -707,6 +772,9 @@
             } if (type == "mobos") {
                 chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData,)
                 legendBase.push("Price")
+            } if (type == "storage") {
+                chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData)
+                legendBase.push("Transfer speed", "Price")
             }
 
             for(bar in chartData.datasets) {
@@ -776,15 +844,16 @@
                 console.log(legendBase)
             }
         }
+
         document.getElementById("myChart").addEventListener("click", function (e) {
             var spaceFromTop = window.pageYOffset + document.getElementById("myChart").getBoundingClientRect().top
             var y = e.pageY - spaceFromTop
             if (y <= myChart.boxes[0].height) {return false}
             var tickNumber = parseInt(y/(myChart.boxes[3].height / myChart.boxes[3].ticks.length))
-            if (type.value == "cpus") {
-                tickNumber -= 1
-            } else {
+            if (type.value == "gpus") {
                 tickNumber -= 2
+            } else {
+                tickNumber -= 1
             }
             var tickClicked = myChart.boxes[3].ticks[tickNumber]
             console.log(tickClicked)
