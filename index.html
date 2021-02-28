@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCBS Graph v0.5.0</title>
+    <title>PCBS Graph v0.6.0</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/flat_round/64/000000/bar-chart--v1.png" />
     <style>
         body {
             background-color: rgb(80, 80, 80);
+            scroll-behavior: smooth;
         }
 
         #myChart {
@@ -18,54 +19,63 @@
 </head>
 
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="Chart.bundle.min.js"></script>
+    
+    <script src="JS/graph.js"></script>
+    <script src="JS/main.js"></script>
 
     <div id="divCPUGraph" class="main" style="width: 100%; padding-bottom: 50px;">
-        <select id="sort" onchange="updateGraph(true)">
-            <option value="true">descending</option>
-            <option value="false">ascending</option>
-        </select>
-        <select id="type" onchange="GRAPHupdateDropdown(this.value), updateGraph(true)">
-            <option value="cpus">CPUs</option>
-            <option value="gpus">GPUs</option>
-            <option value="ram">RAM</option>
-            <option value="mobos">Motherboards</option>
-            <option value="storage">Storage</option>
-        </select>
-        <select id="sortType" onchange="updateGraph(true)">
-        </select>
-        <input type="text" id="search" placeholder="search input" oninput="updateGraph(false)">
-        <input type="button" value="Refresh" onclick="updateGraph(true)">
-        <div id="customCPU" style="display: inline-block;">
-            <input type="number" placeholder="frequency">
-            <input type="button" value="Store" onclick="GRAPHstore(this.previousElementSibling.value); updateGraph(false)">
-            <input type="number" placeholder="RAM speed" id="ram" oninput="updateGraph(false)">
+        <div id="inputs" style="position: fixed; background-color: rgb(80, 80, 80); top: 0px; width: 100%; height: 54px; border-bottom: 1px solid gray;">
+            <select id="sort" onchange="updateGraph(true)">
+                <option value="true">descending</option>
+                <option value="false">ascending</option>
+            </select>
+            <select id="type" onchange="GRAPHupdateDropdown(this.value), updateGraph(true)">
+                <option value="cpus">CPUs</option>
+                <option value="gpus">GPUs</option>
+                <option value="ram">RAM</option>
+                <option value="mobos">Motherboards</option>
+                <option value="storage">Storage</option>
+            </select>
+            <select id="sortType" onchange="updateGraph(true)">
+            </select>
+            <input type="button" value="Refresh" onclick="updateGraph(true)">
+            <div id="customCPU" style="display: inline-block;">
+                <input type="number" placeholder="frequency">
+                <input type="button" value="Store" onclick="GRAPHstore(this.previousElementSibling.value); updateGraph(false)">
+                <input type="number" placeholder="RAM speed" id="ram" oninput="updateGraph(false)">
+            </div>
+            <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale" onclick="updateGraph(true)">
+            <input type="checkbox" id="autoUpdateInputs" title="Disable auto-updating of the chart (for performance)">
+            <input type="checkbox" id="enableHEM" title="Show HEM Parts" checked onclick="updateGraph(false)">
+            <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'inline-block' : 'none';" value="Show filters">
+            <div id="filters" style="background-color: white; border: 3px solid black; border-radius: 1px 1px 1px 1px; display: inline-block; position: absolute; margin-left: 3px;">
+                <span style="color: black">Filters :</span>
+                <select id="sortTypeFilter">
+                </select>
+                <select id="sortOrderFilter">
+                    <option value="==">=</option>
+                    <option value=">" selected>></option>
+                    <option value="<"><</option>
+                </select>
+                <input type="number" placeholder="value" oninput="updateGraph(false)" id="filterValue">
+                </br>
+                <select id="sortTypeFilterBis" style="margin-left: 55px">
+                </select>
+                <select id="sortOrderFilterBis">
+                    <option value="==">=</option>
+                    <option value=">">></option>
+                    <option value="<" selected><</option>
+                </select>
+                <input type="number" placeholder="second value (optional)" oninput="updateGraph(false)" id="filterValueBis">
+            </div>
+            <input type="button" value="To top" style="float: right; margin-right: 10px; margin-left: 5px; margin-top: 2px;" id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <input type="button" value="&#8593" style="float: right; margin-top: 2px;" id="scrollToPrevious">
+            <input type="button" value="&#8595" style="float: right; margin-top: 2px;" id="scrollToNext">
+            <p style="float: right; margin: 2px 10px 0 0; color: rgb(175, 171, 171)" id="scrollNumberIndic">0 / 517</p>
+            <input type="text" id="search" placeholder="search input" oninput="scrollToSearch()" style="float: right; margin-right: 10px; margin-top: 2px;">
         </div>
-        <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale" onclick="updateGraph(true)">
-        <input type="checkbox" id="autoUpdateInputs" title="Disable auto-updating of the chart (for performance)">
-        <input type="checkbox" id="enableHEM" title="Show HEM Parts" checked onclick="updateGraph(false)">
-        <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'inline-block' : 'none';" value="Show filters">
-        <div id="filters" style="background-color: white; border: 3px solid black; border-radius: 1px 1px 1px 1px; display: inline-block">
-            <span style="color: black">Filters :</span>
-            <select id="sortTypeFilter">
-            </select>
-            <select id="sortOrderFilter">
-                <option value="==">=</option>
-                <option value=">" selected>></option>
-                <option value="<"><</option>
-            </select>
-            <input type="number" placeholder="value" oninput="updateGraph(false)" id="filterValue">
-        </br>
-            <select id="sortTypeFilterBis" style="margin-left: 55px">
-            </select>
-            <select id="sortOrderFilterBis">
-                <option value="==">=</option>
-                <option value=">">></option>
-                <option value="<" selected><</option>
-            </select>
-            <input type="number" placeholder="second value (optional)" oninput="updateGraph(false)" id="filterValueBis">
-        </div>
-        <div id="test">
+        <div id="test" style="margin-top: 50px;">
             <canvas id="myChart">
             </canvas>
         </div>
@@ -74,789 +84,22 @@
     <div id="divPartShower" style="display: none;padding: 10px;width: 70%; border: 3px solid black; border-radius: 10px 10px 10px 10px; margin: 0 auto; text-align: center; background-color: lightgray;">
     </div>
     <script>
-        function readTextFile(file, callback) { //stole this from stackoverflow, works like a charm
-            var rawFile = new XMLHttpRequest();
-            rawFile.overrideMimeType("application/json");
-            rawFile.open("GET", file, true);
-            rawFile.onreadystatechange = function() {
-                if (rawFile.readyState === 4 && rawFile.status == "200") {
-                    callback(rawFile.responseText);
-                }
-            }
-            rawFile.send(null);
-        }
-        var myData
-        readTextFile("helpers/data.json", function(text){
-            myData = JSON.parse(text);
-            console.log(myData)
-            updateGraph('')
-        });
-
-        function imageExists(image_url){
-            var http = new XMLHttpRequest();
-            http.open('HEAD', image_url, false);
-            http.send();
-            console.log(image_url)
-            return http.status != 404;
-        }
-
-        function showPartDetails(part) {
-            var type = document.getElementById("type").value
-            var partDetails = myData[type][part]
-            console.log(partDetails)
-            if (type == "cpus") {
-                var customText = `
-                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                    <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                        <h3>
-                            Base frequency of this CPU : ${partDetails.maxFrequency} MHz
-                            <br> is overclockable : ${partDetails.canOverclock}
-                            <br> Max frequency (achievable by 100% of the chips at stock voltage) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency:"Can't OC"}
-                            <br> Theoric maximum frequency (with binning) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency*1.05:"Can't OC"}
-                            <br> Is this CPU in shop ? : ${partDetails.inShop}
-                            <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes":"No"}
-                            <br> Unlockation level : ${partDetails.level}
-                            <br> Max number of RAM sticks : ${partDetails.maxMemoryChannels}
-                            <br> Buy price : ${partDetails.price} $
-                            <br> Sell price : ${partDetails.sellPrice} $
-                            <br> Thermal throttling at : ${partDetails.thermalThrottling} °C
-                            <br> Max voltage : ${partDetails.voltage} V
-                            <br> Ultimate binning voltage : ${partDetails.maxVoltage} V
-                            <br> Wattage consumed : ${partDetails.wattage} W
-                            <br> Socket : ${partDetails.cpuSocket}
-                            <br> Processor series : ${partDetails.series}
-                        </h3>
-                    </div>
-                `
-            } if (type == "gpus") {
-                //var cc = partDetails.baseCoreClock
-                //var mc = partDetails.baseMemClock
-                //var mcc = partDetails.maxCoreClock
-                //var mmc = partDetails.maxMemClock
-                //<br> Theorical max core frequency (with binning) : ${maxOCGpuCoreClock}
-                //<br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
-                //var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
-                //var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100
-                var customText = `
-                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                    <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                        <h3>
-                            Base core frequency : ${partDetails.baseCoreClock}
-                            <br> Base memory frequency : ${partDetails.baseMemClock}
-                            <br> Max core frequency : ${partDetails.maxCoreClock}
-                            <br> Max memory frequency : ${partDetails.maxMemClock}
-                            <br> Chipset : ${partDetails.chipset}
-                            <br> Chipset series : ${partDetails.chipsetSeries}
-                            <br> Chipset brand : ${partDetails.chipsetBrand}
-                            <br> Multi GPU support : ${partDetails.multiGpu}
-                            <br> VRAM (video RAM) : ${partDetails.vram} GB
-                            <br> Thermal throttling (bsod) at : ${partDetails.thermalThrottling} °C
-                            <br> Is this part in shop ? : ${partDetails.isInShop}
-                            <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes": "No"}
-                            <br> Buy price : ${partDetails.price}
-                            <br> Sell price : ${partDetails.sellPrice}
-                            <br> Unlocked at level : ${partDetails.level}
-                            <br> Wattage consumed (at stock speeds) : ${partDetails.wattage} W
-                            <br> GPU Cooling type : ${partDetails.gpuType}
-                            <br> Lighting : ${partDetails.lights == ""? "None":partDetails.lights}
-                        </h3>
-                    </div>
-                `
-            } if (type == "ram") {
-                var customText = `
-                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                        <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                            <h3>
-                                Base frequency : ${partDetails.frequency}
-                                <br> Max frequency : ${partDetails.maxFrequency}
-                                <br> Manufacturer : ${partDetails.manufacturer}
-                                <br> Size of one stick : ${partDetails.totalSizeGB}
-                                <br> Type of RAM : ${partDetails.ramType}
-                                <br> Buy price : ${partDetails.price}
-                                <br> Sale price : ${partDetails.sellPrice}
-                                <br> Unlocked at level : ${partDetails.level}
-                                <br> Lightning : ${partDetails.lightning}
-                                <br> Base voltage : ${partDetails.voltage}
-                                <br> Max voltage (in base game) : ${partDetails.maxVoltage}
-                            </h3>
-                        </div>
-                `
-            } if(type == "mobos") {
-                var customText = `
-                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                        <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                            <h3>
-                                Socket : ${partDetails.cpuSocket}
-                                <br> Chipset : ${partDetails.chipset}
-                                <br> Support overclocking : ${partDetails.canOverclock}
-                                <br> Number of RAM slots : ${partDetails.ramSlots}
-                                <br> Type of RAM : ${partDetails.ramType}
-                                <br> Buy price : ${partDetails.price}
-                                <br> Sale price : ${partDetails.sellPrice}
-                                <br> Unlocked at level : ${partDetails.level}
-                                <br> Lightning : ${partDetails.lightning}
-                                <br> Support SLI : ${partDetails.supportSLI}
-                                <br> Support Crossfire : ${partDetails.supportCrossfire}
-                            </h3>
-                        </div>
-                `
-            } if (type == "storage") {
-                var customText = `
-                    <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
-                        <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                            <h3>
-                                Total size (in GB) : ${partDetails.sizeGB}
-                                <br> Transfer speed : ${partDetails.speed}
-                                <br> Manufacturer : ${partDetails.manufacturer}
-                                <br> Price : ${partDetails.price}
-                                <br> Sell price : ${partDetails.sellPrice}
-                                <br> Unlocked at level : ${partDetails.level}
-                                <br> Type : ${partDetails.type}
-                                <br> Uses heatsink : ${partDetails.includesHeatsink}
-                                <br> Heatsink T H I C Cness: ${partDetails.heatsinkThickness}
-                                <br> Lightning : ${partDetails.lightning}
-                            </h3>
-                        </div>
-                `
-            }
-            if (imageExists("imagesBackup/Texture2D/" + partDetails.iconPath + ".png")) {
-                    customText += `
-                    <div style="display: inline-block">
-                        <img src="imagesBackup/Texture2D/${partDetails.iconPath}.png"></img>
-                    </div>`
-                } else {
-                    customText += `
-                    <div style="display: inline-block">
-                        <img src="imagesBackup/Texture2D/ERROR_NOT_FOUND.png"></img>
-                    </div>`
-                }
-            document.getElementById("divPartShower").innerHTML = customText
-        }
-
-        function id(id) { //simple function that reduce line size by a lot
-            return document.getElementById(id)
-        }
-
-        function goBack(e) {
-            if (e == 'yes' || e.key == "Escape") {
-                document.getElementById("divPartShower").style.display = "none"
-                document.getElementById("backButton").style.display = "none"
-                document.getElementById("divCPUGraph").style.display = "block"
-            }
-            window.removeEventListener("keyup", function (e) {goBack(e)})
-        }
-
         var myChart
-        var legendBase = []
+        var legendBase = [] //set to global scope
         sessionStorage.clear()
         sessionStorage.setItem("freq", "[]")
         GRAPHupdateDropdown("cpus");
-        
-        function GRAPHextractArray(array, type) {
-            for (part in myData[type]) {
-                if (myData[type][part].inShop == "Yes" || myData[type][part].isInShop == "Yes" && myData[type][part].singleGPUGraphicsScore != 0) {
-                    if (!id("enableHEM").checked && myData[type][part].isHEMPart) {
-                        continue
-                    } else {
-                        array.push(myData[type][part])
-                    }
-                }
-            }
-            return array
-        }
-
-        function sortArray(array, factor, sort) {
-            // true = down, false = up
-            if (sort == "true") {
-                return array.sort((a, b) => (a[factor] < b[factor]) ? 1 : -1);
-            } else {
-                return array.sort((a, b) => (a[factor] > b[factor]) ? 1 : -1);
-            }
-        }
-
-        function filterArray(array, key, filterValue, filter, order) {
-            var temp = []
-            for(el in array) {
-                if(key != "" && JSON.stringify(array[el]).toLowerCase().includes(key.toLowerCase())) {
-                    temp.push(array[el])
-                }
-            }
-            return temp
-        }
-
-        function GRAPHstore(value) {
-            var alreadyEntered = JSON.parse(sessionStorage.getItem("freq"))
-            if (myChart.data.labels.length > 1 && showMoreCPUs) {
-                if(!confirm("More than 1 CPU selected, storing for the first...")) {
-                    showMoreCPUs = false
-                }
-            }
-            for(cpu in alreadyEntered) {
-                if(alreadyEntered[cpu].name == myChart.data.labels[0]) {
-                    alreadyEntered[cpu].freq = value
-                    sessionStorage.setItem("freq", JSON.stringify(alreadyEntered))
-                    return
-                }
-            }
-            var needToPush = {
-                "name": myChart.data.labels[0],
-                "freq": value
-            }
-            alreadyEntered.push(needToPush)
-            sessionStorage.setItem("freq", JSON.stringify(alreadyEntered))
-        }
-
-        function GRAPHreplaceCPU(array) {
-            var custom = JSON.parse(sessionStorage.getItem("freq"))
-            for (cpu in array) {
-                for (cust in custom) {
-                    if (custom[cust].name == array[cpu].fullName) {
-                        array[cpu].frequency = parseInt(custom[cust].freq)
-                    }
-                }
-            }
-            return array
-        }
-
-        function GRAPHgetCPUScore(cpu, multiplier, memorySpeed) {
-            if (memorySpeed == "" || memorySpeed == null) {
-                memorySpeed = cpu.defaultMemorySpeed
-            }
-
-            return Math.floor(
-                (
-                    (cpu.coreClockMultiplier * cpu.frequency) +
-                    (cpu.memChannelsMultiplier * cpu.maxMemoryChannels) +
-                    (cpu.memClockMultiplier * memorySpeed) +
-                    (cpu.finalAdjustment)
-                ) * multiplier
-            )
-        }
-
-        function GRAPHupdateDropdown(type) {
-            var score = document.getElementById("sortType")
-            if (type == "gpus") {
-                document.getElementById("customCPU").style.display = "none"
-                score.innerHTML = `
-                    <option value="fullName">Name</option>
-                    <option value="price">Price</option>
-                    <option value="level">Level</option>
-                    <option value="watts">Wattage</option>
-                    <option value="vram">VRAM</option>
-                    <option value="baseCoreClock">Base core frequency</option>
-                    <option value="maxCoreClock">OC core frequency</option>
-                    <option value="baseMemClock">Base memory speed</option>
-                    <option value="maxMemClock">OC memory speed</option>
-                    <option value="singleGPUGraphicsScore" selected>Single GPU score</option>
-                    <option value="singleGPUMaxGraphicsScore">OC Single GPU score</option>
-                    <option value="doubleGPUGraphicsScore">Dual GPU score</option>
-                    <option value="doubleGPUMaxGraphicsScore">OC Dual GPU Score</option>
-                    <option value="partRankingScore">Part Ranking</option>
-                    <option value="gpuType">Cooling type</option>
-                `
-            } if (type == "cpus") {
-                document.getElementById("customCPU").style.display = "inline-block"
-                score.innerHTML = `
-                    <option value="manufacturer">Manufacturer</option>
-                    <option value="basicCPUScore" selected>Score</option>
-                    <option value="partRankingScore">Part ranking</option>
-                    <option value="frequency">Frequency</option>
-                    <option value="maxFrequency">Max OC freq</option>
-                    <option value="wattage">Wattage</option>
-                    <option value="price">Price</option>
-                    <option value="defaultMemorySpeed">Memory Speed</option>
-                    <option value="level">Level unlock</option>
-                `
-            } if (type == "ram") {
-                document.getElementById("customCPU").style.display = "none"
-                score.innerHTML = `
-                    <option value="manufacturer">Manufacturer</option>
-                    <option value="frequency" selected>Frequency</option>
-                    <option value="maxFreq">Max OC freq</option>
-                    <option value="pricePerGig">Price per gigabyte</option>
-                    <option value="level">Level unlock</option>
-                    <option value="price">Buy price</option>
-                    <option value="sellPrice">Sell price</option>
-                    <option value="totalSizeGb">Size</option>
-                `
-            } if (type == "mobos") {
-                document.getElementById("customCPU").style.display = "none"
-                score.innerHTML = `
-                    <option value="manufacturer">Manufacturer</option>
-                    <option value="cpuSocket">Socket</option>
-                    <option value="chipset" selected>Chipset</option>
-                    <option value="level">Level unlocked</option>
-                    <option value="price">Buy price</option>
-                    <option value="sellPrice">Sell price</option>
-                    <option value="motherboardSize">Motherboard form factor</option>
-                    <option value="defaultMemorySpeed">Default memory speed</option>
-                    <option value="maxMemorySpeed">Max memory speed</option>
-                    <option value="ramType">Ram type</option>
-                    <option value="m2Slots">M.2 Slots number</option>
-                    <option value="m2SlotsSupportingHeatsinks">M.2 Slots supporting heatsinks</option>
-                    <option value="ramSlots">RAM slots</option>
-                `
-            } if (type == "storage") {
-                document.getElementById("customCPU").style.display = "none"
-                score.innerHTML = `
-                    <option value="manufacturer">Manufacturer</option>
-                    <option value="level">Level unlocked</option>
-                    <option value="price">Buy price</option>
-                    <option value="sellPrice">Sell price</option>
-                    <option value="size">Total size</option>
-                    <option value="speed" selected>Transfer speed</option>
-                `
-            }
-            document.getElementById("sortTypeFilter").innerHTML = score.innerHTML
-            document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
-        }
-
-        function GRAPHupdateHeight(lines) {
-            document.getElementById("test").style.height = lines * 3 + 50 + "vh";
-        }
-
-        function updateGraph(priority) {
-            var currentData = []
-            var replacedCustom = []
-
-            var realTime = false
-            var keyWord = document.getElementById("search").value
-            var type = document.getElementById("type").value
-            var score = document.getElementById("sortType")
-            var filterValue = document.getElementById("filterValue").value
-            var filterValueBis = document.getElementById("filterValueBis").value
-            var filterType = document.getElementById("sortTypeFilter").value
-            var filterTypeBis = document.getElementById("sortTypeFilterBis").value
-
-            var basicScore = []
-            var maxBasicScore = []
-            var partRanking = []
-            var fullName = []
-            var dualScore = []
-            var maxDualScore = []
-            var frequency = []
-            var maxFrequency = []
-            var wattage = []
-            var price = []
-            var sellPrice = []
-            var defaultMemory = []
-            var Watts = []
-            var level = []
-            var chipsetSeries = []
-            var vram = []
-            var memClock = []
-            var maxMemClock = []
-            var scaleType
-
-            if (!priority && document.getElementById("autoUpdateInputs").checked) {
-                return false
-            }
-            
-            if (document.getElementById("logarithmicCheck").checked) {
-                scaleType = "logarithmic"
-            } else {
-                scaleType = "linear"
-            }
-
-            currentData = GRAPHextractArray(currentData, type);
-            if (keyWord != "") {
-                currentData = filterArray(currentData, keyWord)
-            }
-
-            if (filterValue != "") {
-                var sortOrder = document.getElementById("sortOrderFilter").value
-                if (sortOrder == "==") {
-                    currentData = currentData.filter(part => part[filterType] == filterValue)
-                } if (sortOrder == ">") {
-                    currentData = currentData.filter(part => part[filterType] > filterValue)
-                }if (sortOrder == "<") {
-                    currentData = currentData.filter(part => part[filterType] < filterValue)
-                }
-            }
-
-            if (filterValueBis != "") {
-                var sortOrder = document.getElementById("sortOrderFilterBis").value
-                if (sortOrder == "==") {
-                    currentData = currentData.filter(part => part[filterTypeBis] == filterValueBis)
-                } if (sortOrder == ">") {
-                    currentData = currentData.filter(part => part[filterTypeBis] > filterValueBis)
-                }if (sortOrder == "<") {
-                    currentData = currentData.filter(part => part[filterTypeBis] < filterValueBis)
-                }
-            }
-
-
-            replacedCustom = currentData
-
-            if (JSON.parse(sessionStorage.getItem("freq"))[0] != null && type != "gpus") {
-                realTime = true
-                replacedCustom = GRAPHreplaceCPU(currentData)
-            }
-
-            if (document.getElementById("ram").value != "" && type != "gpus") {
-                realTime = true
-            }
-
-            if (!realTime || type == "gpus") {
-                replacedCustom = currentData
-            }
-
-            replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value)
-
-            if (realTime) {
-                for (cpu in replacedCustom) {
-                    replacedCustom[cpu].basicCustomScore = GRAPHgetCPUScore(replacedCustom[cpu], 298, document.getElementById("ram").value)
-                    replacedCustom[cpu].partCustomRanking = GRAPHgetCPUScore(replacedCustom[cpu], 100, document.getElementById("ram").value)
-                }
-                replacedCustom = sortArray(replacedCustom, "basicCustomScore", document.getElementById("sort").value)
-            }
-
-            GRAPHupdateHeight(replacedCustom.length)
-
-            if (id('ram').value != null && score.value == "defaultMemorySpeed") {
-                alert("When using custom ram speed, the bars won't change, the score will do tho")
-            }
-
-            if (type == "cpus") {
-                for (cpu in replacedCustom) {
-                    if (realTime) {
-                        if (replacedCustom[cpu].basicCustomScore < 0) {
-                            replacedCustom[cpu].basicCustomScore = 0
-                        }
-
-                        if (replacedCustom[cpu].partCustomRanking < 0) {
-                            replacedCustom[cpu].partCustomRanking = 0
-                        }
-                        basicScore.push(replacedCustom[cpu].basicCustomScore)
-                        partRanking.push(replacedCustom[cpu].partCustomRanking)
-                    } else {
-                        if (replacedCustom[cpu].basicCPUScore < 0) {
-                            replacedCustom[cpu].basicCPUScore = 0
-                        }
-
-                        if (replacedCustom[cpu].partRankingScore < 0) {
-                            replacedCustom[cpu].partRankingScore = 0
-                        }
-                        basicScore.push(replacedCustom[cpu].basicCPUScore)
-                        partRanking.push(replacedCustom[cpu].partRankingScore)
-                    }
-                    frequency.push(replacedCustom[cpu].frequency)
-                    maxFrequency.push(replacedCustom[cpu].maxFrequency)
-                    defaultMemory.push(replacedCustom[cpu].defaultMemorySpeed)
-                    price.push(replacedCustom[cpu].price)
-                    Watts.push(replacedCustom[cpu].wattage)
-                    fullName.push(replacedCustom[cpu].fullName)
-                    level.push(replacedCustom[cpu].level)
-                }
-            } if (type == "gpus") {
-                for (gpu in replacedCustom) {
-                    price.push(replacedCustom[gpu].price)
-                    frequency.push(replacedCustom[gpu].baseCoreClock)
-                    level.push(replacedCustom[gpu].level)
-                    vram.push(replacedCustom[gpu].vram)
-                    maxFrequency.push(replacedCustom[gpu].maxCoreClock)
-                    memClock.push(replacedCustom[gpu].baseMemClock)
-                    maxMemClock.push(replacedCustom[gpu].maxMemClock)
-                    Watts.push(replacedCustom[gpu].watts)
-                    basicScore.push(replacedCustom[gpu].singleGPUGraphicsScore)
-                    maxBasicScore.push(replacedCustom[gpu].singleGPUMaxGraphicsScore)
-                    partRanking.push(replacedCustom[gpu].partRankingScore)
-                    fullName.push(replacedCustom[gpu].fullName)
-                    dualScore.push(replacedCustom[gpu].doubleGPUGraphicsScore)
-                    maxDualScore.push(replacedCustom[gpu].doubleGPUMaxGraphicsScore)
-                }
-            } if (type == "ram") {
-                var size = []
-                var pricePerGig = []
-                for (ram in replacedCustom) {
-                    price.push(replacedCustom[ram].price)
-                    sellPrice.push(replacedCustom[ram].sellPrice)
-                    frequency.push(replacedCustom[ram].frequency)
-                    maxFrequency.push(replacedCustom[ram].maxFrequency)
-                    pricePerGig.push(replacedCustom[ram].pricePerGig)
-                    level.push(replacedCustom[ram].level)
-                    fullName.push(replacedCustom[ram].fullName)
-                    size.push(replacedCustom[ram].totalSizeGB)
-                }
-            } if (type == "mobos") {
-                var M2Slots = []
-                var M2SlotsHeatSink = []
-                for (mobo in replacedCustom) {
-                    maxFrequency.push(replacedCustom[mobo].maxMemorySpeed)
-                    price.push(replacedCustom[mobo].price)
-                    sellPrice.push(replacedCustom[mobo].sellPrice)
-                    frequency.push(replacedCustom[mobo].defaultMemorySpeed)
-                    level.push(replacedCustom[mobo].level)
-                    M2Slots.push(replacedCustom[mobo].m2Slots)
-                    M2SlotsHeatSink.push(replacedCustom[mobo].m2SlotsSupportingHeatsinks)
-                    fullName.push(replacedCustom[mobo].fullName)
-                }
-            } if (type == "storage") {
-                var size = []
-                var transferSpeed = []
-                for (s in replacedCustom) {
-                    price.push(replacedCustom[s].price)
-                    sellPrice.push(replacedCustom[s].sellPrice)
-                    size.push(replacedCustom[s].sizeGB)
-                    fullName.push(replacedCustom[s].fullName)
-                    level.push(replacedCustom[s].level)
-                    transferSpeed.push(replacedCustom[s].speed)
-                }
-            }
-
-            if (myChart != undefined) {
-                myChart.destroy();
-                console.log("destroyed")
-            }
-
-
-            var dualScoreData = {
-                label: "Dual GPU Score",
-                data: dualScore,
-                hidden: true,
-                backgroundColor: 'rgba(102, 81, 145, 0.5)',
-                borderColor: 'rgba(120,88,186,1)',
-            }
-            var levelData = {
-                label: "Level",
-                data: level,
-                hidden: true,
-                backgroundColor: 'rgba(207, 205, 9, 0.5)',
-                borderColor: 'rgba(224,223,91,1)',
-            }
-            var vramData = {
-                label: "VRAM",
-                data: vram,
-                hidden: true,
-                backgroundColor: 'rgba(255, 124, 67, 0.5)',
-                borderColor: 'rgba(255,144,96,1)',
-            }
-            var memClockData = {
-                label: "Memory Clock",
-                data: memClock,
-                hidden: true,
-                backgroundColor: 'rgba(249, 93, 106, 0.5)',
-                borderColor: 'rgba(249,115,126,1)',
-            }
-            var ocMemClockData = {
-                label: "Max Memory Clock",
-                data: maxMemClock,
-                hidden: true,
-                backgroundColor: 'rgba(250, 81, 52, 0.5)',
-                borderColor: 'rgba(252,117,94,1)',
-            }
-            var ocSingleScoreData = {
-                label: "OC score",
-                data: maxBasicScore,
-                hidden: true,
-                backgroundColor: 'rgba(212, 80, 135, 0.5)',
-                borderColor: 'rgba(230,80,143,1)',
-            }
-            var ocDualScoreData = {
-                label: "OC Dual GPU Score",
-                data: maxDualScore,
-                hidden: true,
-                backgroundColor: 'rgba(191, 67, 174, 0.5)',
-                borderColor: 'rgba(198,71,180,1)',
-            }
-            var freqData = {
-                label: "Frequency",
-                data: frequency,
-                hidden: true,
-                backgroundColor: 'rgba(160, 100, 199, 0.5)',
-                borderColor: 'rgba(122,81,149,1)',
-            }
-            var maxFreqData = {
-                    label: "Max Frequency",
-                    data: maxFrequency,
-                    hidden: true,
-                    backgroundColor: 'rgba(215, 80, 160, 0.5)',
-                    borderColor: 'rgba(188,80,144,1)',
-                }
-            var defaultMemoryData = {
-                    label: "Memory Speed",
-                    data: defaultMemory,
-                    hidden: true,
-                    backgroundColor: 'rgba(255, 49, 91, 0.5)',
-                    borderColor: 'rgba(239,86,117,1)',
-                }
-            var priceData = {
-                    label: "Price",
-                    data: price,
-                    hidden: true,
-                    backgroundColor: 'rgba(255, 124, 82, 0.5)',
-                    borderColor: 'rgba(255,101,52,1)',
-                }
-            var wattageData = {
-                    label: "Wattage",
-                    data: Watts,
-                    hidden: true,
-                    backgroundColor: 'rgba(255, 192, 75, 0.5)',
-                    borderColor: 'rgba(255,166,0,1)',
-            }
-            var sellPriceData = {
-                label: "Sell price",
-                data: sellPrice,
-                hidden: true,
-                backgroundColor: 'rgba(255, 255, 0, 0.5)',
-                borderColor: 'rgba(200, 200, 0)',
-            }
-            var pricePerGigData = {
-                label: "Price per gigabyte",
-                data: pricePerGig,
-                hidden: true,
-                backgroundColor: 'rgba(191, 67, 174, 0.5)',
-                borderColor : 'rgba(198,71,180,1)',
-            }
-            var sizeData = {
-                label: "Total size (GB)",
-                data: size,
-                hidden: true,
-                backgroundColor: 'rgba(212, 80, 135, 0.5)',
-                borderColor: 'rgba(230,80,143,1)',
-            }
-            var scoreData = {
-                label: "Score",
-                hidden: true,
-                data: basicScore,
-                backgroundColor: 'rgba(0, 143, 209, 0.5)',
-                borderColor: 'rgba(0,63,92,1)',
-            }
-            var partRankingData = {
-                label: "Part Ranking",
-                data: partRanking,
-                hidden: true,
-                backgroundColor: "rgba(79, 111,189,0.5)",
-                borderColor: "rgba(55,76,128,1)",
-            }
-            var m2SlotsData = {
-                label: "M2 Slots",
-                data: M2Slots,
-                hidden: true,
-                backgroundColor: 'rgba(191, 67, 174, 0.5)',
-                borderColor: 'rgba(198,71,180,1)'
-            }
-            var m2SlotsHeatData = {
-                label: "M2 Slots supporting heatsinks",
-                data: M2SlotsHeatSink,
-                hidden: true,
-                backgroundColor: 'rgba(212, 80, 135, 0.5)',
-                borderColor: 'rgba(230,80,143,1)'
-            }
-            var transferSpeedData = {
-                label: "Transfer speed",
-                data: transferSpeed,
-                hidden: true,
-                backgroundColor: "rgba(79, 111,189,0.5)",
-                borderColor: "rgba(55,76,128,1)"
-            }
-            //dualScoreData, vramData, memClockData, ocMemClockData, ocSingleScoreData, ocDualScoreData, scoreData, partRankingData
-            //levelData, priceData, sellPriceData, freqData, maxFreqData, defaultMemoryData, wattageData, pricePerGigData, sizeData
-            // transferSpeedData
-
-
-            var chartData = {
-                labels: fullName,
-                datasets: []
-            }
-
-            if (type == "gpus") {
-                chartData.datasets.push(scoreData, ocSingleScoreData,  partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData)
-                legendBase.push("Score", "Part Ranking")
-            } if (type == "cpus") {
-                chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData)
-                legendBase.push("Score", "Part Ranking")
-            } if (type == "ram") {
-                chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData)
-                legendBase.push("Frequency", "Total size (GB)")
-            } if (type == "mobos") {
-                chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData,)
-                legendBase.push("Price")
-            } if (type == "storage") {
-                chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData)
-                legendBase.push("Transfer speed", "Price")
-            }
-
-            for(bar in chartData.datasets) {
-                chartData.datasets[bar].barPercentage = 0.8
-                chartData.datasets[bar].borderWidth = 1
-                for (barBis in legendBase) {
-                    if (legendBase[barBis] == chartData.datasets[bar].label) {
-                        chartData.datasets[bar].hidden = false
-                    }
-                }
-            }
-
-            var ctx = document.getElementById('myChart').getContext('2d');
-
-            myChart = new Chart(ctx, {
-                type: 'horizontalBar',
-                data: chartData,
-                options: {
-                    legend: {
-                        onClick: function (evt, legendItem) {
-                            countLegend(legendItem)
-                            Chart.defaults.global.legend.onClick.call(this, evt, legendItem)
-                        },
-                        labels: {
-                            fontColor: "#b3b2af",
-                        }
-                    },
-                    tooltips: {
-                        mode: 'index'
-                    },
-                    maintainAspectRatio: false,
-                    scales: {
-                        xAxes: [{
-                            gridLines : {
-                                color: "#595959"
-                            },
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                            type: scaleType,
-                        }],
-                        yAxes: [{
-                            gridLines : {
-                                color: "#b3b2af"
-                            },
-                            ticks: {
-                                fontColor: "#b3b2af",
-                                fontSize: 18,
-                                stepSize: 1,
-                                beginAtZero: true,
-                            }
-                        }],
-                    },
-                }
-            });
-            var countLegend = function(legend) {
-                console.log(legend.text)
-                for (leg in legendBase) {
-                    console.log(leg)
-                    if (legendBase[leg] == legend.text) {
-                        delete legendBase[leg]
-                        console.log(legendBase)
-                        return
-                    }
-                }
-                legendBase.push(legend.text)
-                console.log(legendBase)
-            }
-        }
-
         document.getElementById("myChart").addEventListener("click", function (e) {
             var spaceFromTop = window.pageYOffset + document.getElementById("myChart").getBoundingClientRect().top
-            var y = e.pageY - spaceFromTop
-            if (y <= myChart.boxes[0].height) {return false}
-            var tickNumber = parseInt(y/(myChart.boxes[3].height / myChart.boxes[3].ticks.length))
+            var y = e.pageY - spaceFromTop //get Y click position on the graph instead of the page
+            if (y <= myChart.boxes[0].height) {return false} //if clicked on the legend
+            var tickNumber = Math.round(y/(myChart.boxes[3].height / myChart.boxes[3].ticks.length))
             if (type.value == "gpus") {
-                tickNumber -= 2
+                tickNumber -= 2 //dis is because the legend on the gpus is 2 lines high I think (not sure but it works)
             } else {
                 tickNumber -= 1
             }
             var tickClicked = myChart.boxes[3].ticks[tickNumber]
-            console.log(tickClicked)
             document.getElementById("divCPUGraph").style.display = "none"
             document.getElementById("divPartShower").style.display = "block"
             document.getElementById("backButton").style.display = "block"
@@ -865,6 +108,7 @@
             })
             showPartDetails(tickClicked)
         })
+        window.addEventListener('scroll', scrollToSearch)
     </script>
 </body>
 </html>
