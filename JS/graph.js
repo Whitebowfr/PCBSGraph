@@ -1,5 +1,6 @@
 var previousType
 var currentData = []
+
 function updateGraph(priority, compatibleSort) {
     currentData = []
     var replacedCustom = []
@@ -57,9 +58,11 @@ function updateGraph(priority, compatibleSort) {
         var sortOrder = document.getElementById("sortOrderFilter").value
         if (sortOrder == "==") {
             currentData = currentData.filter(part => part[filterType] == filterValue)
-        } if (sortOrder == ">") {
+        }
+        if (sortOrder == ">") {
             currentData = currentData.filter(part => part[filterType] > filterValue)
-        }if (sortOrder == "<") {
+        }
+        if (sortOrder == "<") {
             currentData = currentData.filter(part => part[filterType] < filterValue)
         }
     }
@@ -74,9 +77,11 @@ function updateGraph(priority, compatibleSort) {
         var sortOrder = document.getElementById("sortOrderFilterBis").value
         if (sortOrder == "==") {
             currentData = currentData.filter(part => part[filterTypeBis] == filterValueBis)
-        } if (sortOrder == ">") {
+        }
+        if (sortOrder == ">") {
             currentData = currentData.filter(part => part[filterTypeBis] > filterValueBis)
-        }if (sortOrder == "<") {
+        }
+        if (sortOrder == "<") {
             currentData = currentData.filter(part => part[filterTypeBis] < filterValueBis)
         }
     }
@@ -149,7 +154,8 @@ function updateGraph(priority, compatibleSort) {
             fullName.push(replacedCustom[cpu].fullName)
             level.push(replacedCustom[cpu].level)
         }
-    } if (type == "gpus") {
+    }
+    if (type == "gpus") {
         for (gpu in replacedCustom) {
             price.push(replacedCustom[gpu].price)
             frequency.push(replacedCustom[gpu].baseCoreClock)
@@ -166,7 +172,8 @@ function updateGraph(priority, compatibleSort) {
             dualScore.push(replacedCustom[gpu].doubleGPUGraphicsScore)
             maxDualScore.push(replacedCustom[gpu].doubleGPUMaxGraphicsScore)
         }
-    } if (type == "ram") {
+    }
+    if (type == "ram") {
         var size = []
         var pricePerGig = []
         for (ram in replacedCustom) {
@@ -179,7 +186,8 @@ function updateGraph(priority, compatibleSort) {
             fullName.push(replacedCustom[ram].fullName)
             size.push(replacedCustom[ram].totalSizeGB)
         }
-    } if (type == "mobos") {
+    }
+    if (type == "mobos") {
         var M2Slots = []
         var M2SlotsHeatSink = []
         for (mobo in replacedCustom) {
@@ -192,7 +200,8 @@ function updateGraph(priority, compatibleSort) {
             M2SlotsHeatSink.push(replacedCustom[mobo].m2SlotsSupportingHeatsinks)
             fullName.push(replacedCustom[mobo].fullName)
         }
-    } if (type == "storage") {
+    }
+    if (type == "storage") {
         var size = []
         var transferSpeed = []
         for (s in replacedCustom) {
@@ -308,7 +317,7 @@ function updateGraph(priority, compatibleSort) {
         data: pricePerGig,
         hidden: true,
         backgroundColor: 'rgba(191, 67, 174, 0.5)',
-        borderColor : 'rgba(198,71,180,1)',
+        borderColor: 'rgba(198,71,180,1)',
     }
     var sizeData = {
         label: "Total size (GB)",
@@ -366,23 +375,27 @@ function updateGraph(priority, compatibleSort) {
 
     //Push different datasets to the chart depending on the type
     if (type == "gpus") {
-        chartData.datasets.push(scoreData, ocSingleScoreData,  partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData)
+        chartData.datasets.push(scoreData, ocSingleScoreData, partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData)
         legendBase.push("Score", "Part Ranking")
-    } if (type == "cpus") {
+    }
+    if (type == "cpus") {
         chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData)
         legendBase.push("Score", "Part Ranking")
-    } if (type == "ram") {
+    }
+    if (type == "ram") {
         chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData)
         legendBase.push("Frequency", "Total size (GB)")
-    } if (type == "mobos") {
-        chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData,)
+    }
+    if (type == "mobos") {
+        chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData, )
         legendBase.push("Price")
-    } if (type == "storage") {
+    }
+    if (type == "storage") {
         chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData)
         legendBase.push("Transfer speed", "Price")
     }
 
-    for(bar in chartData.datasets) {
+    for (bar in chartData.datasets) {
         chartData.datasets[bar].barPercentage = 0.8
         chartData.datasets[bar].borderWidth = 1
         for (barBis in legendBase) {
@@ -402,7 +415,7 @@ function updateGraph(priority, compatibleSort) {
                 duration: 0
             },
             legend: {
-                onClick: function (evt, legendItem) {
+                onClick: function(evt, legendItem) {
                     countLegend(legendItem)
                     Chart.defaults.global.legend.onClick.call(this, evt, legendItem)
                 },
@@ -416,7 +429,7 @@ function updateGraph(priority, compatibleSort) {
             maintainAspectRatio: false,
             scales: {
                 xAxes: [{
-                    gridLines : {
+                    gridLines: {
                         color: "#595959"
                     },
                     ticks: {
@@ -425,7 +438,7 @@ function updateGraph(priority, compatibleSort) {
                     type: scaleType,
                 }],
                 yAxes: [{
-                    gridLines : {
+                    gridLines: {
                         color: "#b3b2af"
                     },
                     ticks: {
@@ -460,7 +473,7 @@ function updateGraph(priority, compatibleSort) {
 
 function GRAPHupdateDropdown(type) {
     var score = document.getElementById("sortType")
-    
+
     //Changes the filters depending on the type selected
     if (type == "gpus") {
         document.getElementById("customCPU").style.display = "none"
@@ -481,7 +494,8 @@ function GRAPHupdateDropdown(type) {
             <option value="partRankingScore">Part Ranking</option>
             <option value="gpuType">Cooling type</option>
         `
-    } if (type == "cpus") {
+    }
+    if (type == "cpus") {
         document.getElementById("customCPU").style.display = "inline-block"
         score.innerHTML = `
             <option value="manufacturer">Manufacturer</option>
@@ -494,7 +508,8 @@ function GRAPHupdateDropdown(type) {
             <option value="defaultMemorySpeed">Memory Speed</option>
             <option value="level">Level unlock</option>
         `
-    } if (type == "ram") {
+    }
+    if (type == "ram") {
         document.getElementById("customCPU").style.display = "none"
         score.innerHTML = `
             <option value="manufacturer">Manufacturer</option>
@@ -506,7 +521,8 @@ function GRAPHupdateDropdown(type) {
             <option value="sellPrice">Sell price</option>
             <option value="totalSizeGb">Size</option>
         `
-    } if (type == "mobos") {
+    }
+    if (type == "mobos") {
         document.getElementById("customCPU").style.display = "none"
         score.innerHTML = `
             <option value="manufacturer">Manufacturer</option>
@@ -523,7 +539,8 @@ function GRAPHupdateDropdown(type) {
             <option value="m2SlotsSupportingHeatsinks">M.2 Slots supporting heatsinks</option>
             <option value="ramSlots">RAM slots</option>
         `
-    } if (type == "storage") {
+    }
+    if (type == "storage") {
         document.getElementById("customCPU").style.display = "none"
         score.innerHTML = `
             <option value="manufacturer">Manufacturer</option>
@@ -541,12 +558,12 @@ function GRAPHupdateDropdown(type) {
 function GRAPHstore(value) {
     var alreadyEntered = JSON.parse(sessionStorage.getItem("freq"))
     if (myChart.data.labels.length > 1 && showMoreCPUs) {
-        if(!confirm("More than 1 CPU selected, storing for the first...")) {
+        if (!confirm("More than 1 CPU selected, storing for the first...")) {
             showMoreCPUs = false
         }
     }
-    for(cpu in alreadyEntered) {
-        if(alreadyEntered[cpu].name == myChart.data.labels[0]) {
+    for (cpu in alreadyEntered) {
+        if (alreadyEntered[cpu].name == myChart.data.labels[0]) {
             alreadyEntered[cpu].freq = value
             sessionStorage.setItem("freq", JSON.stringify(alreadyEntered))
             return
@@ -588,7 +605,8 @@ function showPartDetails(part) {
                 <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.cpuSocket}')">
             </div>
         `
-    } if (type == "gpus") {
+    }
+    if (type == "gpus") {
         //var cc = partDetails.baseCoreClock
         //var mc = partDetails.baseMemClock
         //var mcc = partDetails.maxCoreClock
@@ -622,7 +640,8 @@ function showPartDetails(part) {
                 </h3>
             </div>
         `
-    } if (type == "ram") {
+    }
+    if (type == "ram") {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
@@ -641,7 +660,8 @@ function showPartDetails(part) {
                     </h3>
                 </div>
         `
-    } if(type == "mobos") {
+    }
+    if (type == "mobos") {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
@@ -660,7 +680,8 @@ function showPartDetails(part) {
                     </h3>
                 </div>
         `
-    } if (type == "storage") {
+    }
+    if (type == "storage") {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
@@ -680,15 +701,15 @@ function showPartDetails(part) {
         `
     }
     if (imageExists("imagesBackup/Texture2D/" + partDetails.iconPath + ".png")) {
-            customText += `
+        customText += `
             <div style="display: inline-block">
                 <img src="imagesBackup/Texture2D/${partDetails.iconPath}.png"></img>
             </div>`
-        } else {
-            customText += `
+    } else {
+        customText += `
             <div style="display: inline-block">
                 <img src="imagesBackup/Texture2D/ERROR_NOT_FOUND.png"></img>
             </div>`
-        }
+    }
     document.getElementById("divPartShower").innerHTML = customText
 }

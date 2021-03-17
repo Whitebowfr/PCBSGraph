@@ -12,14 +12,14 @@ function readTextFile(file, callback) { //stole this from stackoverflow, works l
 var myData
 
 //Open the data file, and also fire the whole code (since it's asynchronous, we must wait for it to load)
-readTextFile("helpers/data.json", function(text){
+readTextFile("helpers/data.json", function(text) {
     myData = JSON.parse(text);
     updateGraph('')
 });
 
 //Check if image exist in the database, used in the part shower
 //Returns a boolean
-function imageExists(image_url){
+function imageExists(image_url) {
     var http = new XMLHttpRequest();
     http.open('HEAD', image_url, false);
     http.send();
@@ -62,7 +62,7 @@ function goBack(e) {
         document.getElementById("backButton").style.display = "none"
         document.getElementById("divCPUGraph").style.display = "block"
     }
-    window.removeEventListener("keyup", function (e) {goBack(e)})
+    window.removeEventListener("keyup", function(e) { goBack(e) })
 }
 
 //extract the differents parts from a certain type in the specified array
@@ -94,8 +94,8 @@ function sortArray(array, factor, sort) {
 //Returns an array containing ONLY the parts with the specified key
 function filterArray(array, key) {
     var temp = []
-    for(el in array) {
-        if(key != "" && JSON.stringify(array[el]).toLowerCase().includes(key.toLowerCase())) {
+    for (el in array) {
+        if (key != "" && JSON.stringify(array[el]).toLowerCase().includes(key.toLowerCase())) {
             temp.push(array[el])
         }
     }
@@ -139,7 +139,7 @@ function GRAPHreplaceCPU(array) {
 //Gives the position of the different corresponding parts from the array. Using toLowerCase() so it's more user-friendly. 
 //Should return an array of numbers
 function getNumberInArray(array, key) {
-    if (key == "") {return false}
+    if (key == "") { return false }
     var i = 0
     var result = []
     for (el in array) {
@@ -155,20 +155,21 @@ function scrollToSearch() {
     key = document.getElementById("search").value
 
     // this way if input is empty, every part will show up
-    if (key == "") {key = " "}
+    if (key == "") { key = " " }
 
     var toScroll = getNumberInArray(currentData, key)
     var it = -1
     var toScrollInGraph = []
     var indic = document.getElementById("scrollNumberIndic")
     indic.innerText = "0 / " + toScroll.length
-    
+
 
     for (tick in toScroll) {
         toScrollInGraph.push(myChart.boxes[3]._labelItems[toScroll[tick]].y)
     }
 
-    //return the index of the closest y value
+    console.log(toScrollInGraph)
+        //return the index of the closest y value
     var closest = toScrollInGraph.reduce((a, b) => {
         return Math.abs(b - window.scrollY) < Math.abs(a - window.scrollY) ? b : a
     });
@@ -176,9 +177,10 @@ function scrollToSearch() {
     indic.innerText = (it + 1) + " / " + toScroll.length
 
     //these are to reset the eventListeners (when cloning they don't keep the events)
-    var el = document.getElementById("scrollToNext"), elClone = el.cloneNode(true)
+    var el = document.getElementById("scrollToNext"),
+        elClone = el.cloneNode(true)
     el.parentNode.replaceChild(elClone, el)
-    document.getElementById("scrollToNext").addEventListener("click", function () {
+    document.getElementById("scrollToNext").addEventListener("click", function() {
         it++
 
         //When hitting the end of the page, scroll back to the top
@@ -191,16 +193,17 @@ function scrollToSearch() {
 
         //We need to remove temporarily the window event so it doesn't get triggered when scrolling with the buttons
         window.removeEventListener('scroll', scrollToSearch)
-        window.scrollTo({top: y, behavior: 'smooth'})
+        window.scrollTo({ top: y, behavior: 'smooth' })
         indic.innerText = (it + 1) + " / " + toScroll.length
 
         //On a timer, because the scrolling is 𝓈 𝓂 𝑜 𝑜 𝓉 𝒽
-        setTimeout( () => {window.addEventListener('scroll', scrollToSearch)}, 200)
+        setTimeout(() => { window.addEventListener('scroll', scrollToSearch) }, 200)
     })
 
-    var el = document.getElementById("scrollToPrevious"), elClone = el.cloneNode(true)
+    var el = document.getElementById("scrollToPrevious"),
+        elClone = el.cloneNode(true)
     el.parentNode.replaceChild(elClone, el)
-    document.getElementById("scrollToPrevious").addEventListener("click", function () {
+    document.getElementById("scrollToPrevious").addEventListener("click", function() {
         it--
 
         //Same as before, just this time you go to the bottom
@@ -210,8 +213,8 @@ function scrollToSearch() {
 
         var y = myChart.boxes[3]._labelItems[toScroll[it]].y - myChart.boxes[3]._labelItems[toScroll[it]].font.lineHeight
         window.removeEventListener('scroll', scrollToSearch)
-        window.scrollTo({top: y, behavior: 'smooth'})
+        window.scrollTo({ top: y, behavior: 'smooth' })
         indic.innerText = (it + 1) + " / " + toScroll.length
-        setTimeout( () => {window.addEventListener('scroll', scrollToSearch)}, 200)
+        setTimeout(() => { window.addEventListener('scroll', scrollToSearch) }, 200)
     })
 }

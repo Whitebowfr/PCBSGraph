@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCBS Graph v0.6.0</title>
+    <title>PCBS Graph v0.6.2</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/flat_round/64/000000/bar-chart--v1.png" />
     <style>
         body {
             background-color: rgb(80, 80, 80);
             scroll-behavior: smooth;
         }
-
+        
         #myChart {
             cursor: pointer
         }
@@ -19,8 +19,8 @@
 </head>
 
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    
+    <script src="Chart.bundle.min.js"></script>
+
     <script src="JS/graph.js"></script>
     <script src="JS/main.js"></script>
 
@@ -89,11 +89,13 @@
         sessionStorage.clear()
         sessionStorage.setItem("freq", "[]")
         GRAPHupdateDropdown("cpus");
-        document.getElementById("myChart").addEventListener("click", function (e) {
+        document.getElementById("myChart").addEventListener("click", function(e) {
             var spaceFromTop = window.pageYOffset + document.getElementById("myChart").getBoundingClientRect().top
             var y = e.pageY - spaceFromTop //get Y click position on the graph instead of the page
-            if (y <= myChart.boxes[0].height) {return false} //if clicked on the legend
-            var tickNumber = Math.round(y/(myChart.boxes[3].height / myChart.boxes[3].ticks.length))
+            if (y <= myChart.boxes[0].height) {
+                return false
+            } //if clicked on the legend
+            var tickNumber = Math.round(y / (myChart.boxes[3].height / myChart.boxes[3].ticks.length))
             if (type.value == "gpus") {
                 tickNumber -= 2 //dis is because the legend on the gpus is 2 lines high I think (not sure but it works)
             } else {
@@ -103,7 +105,7 @@
             document.getElementById("divCPUGraph").style.display = "none"
             document.getElementById("divPartShower").style.display = "block"
             document.getElementById("backButton").style.display = "block"
-            window.addEventListener("keyup", function (e) {
+            window.addEventListener("keyup", function(e) {
                 goBack(e)
             })
             showPartDetails(tickClicked)
@@ -111,4 +113,5 @@
         window.addEventListener('scroll', scrollToSearch)
     </script>
 </body>
+
 </html>
