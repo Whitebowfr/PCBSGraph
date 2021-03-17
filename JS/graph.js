@@ -1,7 +1,7 @@
 var previousType
 var currentData = []
 
-function updateGraph(priority, compatibleSort) {
+function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
     currentData = []
     var replacedCustom = []
 
@@ -499,6 +499,7 @@ function GRAPHupdateDropdown(type) {
         document.getElementById("customCPU").style.display = "inline-block"
         score.innerHTML = `
             <option value="manufacturer">Manufacturer</option>
+            <option value="cpuSocket">Socket</option>
             <option value="basicCPUScore" selected>Score</option>
             <option value="partRankingScore">Part ranking</option>
             <option value="frequency">Frequency</option>
@@ -588,7 +589,7 @@ function showPartDetails(part) {
                     Base frequency of this CPU : ${partDetails.maxFrequency} MHz
                     <br> is overclockable : ${partDetails.canOverclock}
                     <br> Max frequency (achievable by 100% of the chips at stock voltage) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency:"Can't OC"}
-                    <br> Theoric maximum frequency (with binning) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency*1.05:"Can't OC"}
+                    <br> Theoric maximum frequency (with binning, on stock voltage) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency*1.05:"Can't OC"}
                     <br> Is this CPU in shop ? : ${partDetails.inShop}
                     <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes":"No"}
                     <br> Unlockation level : ${partDetails.level}
@@ -596,13 +597,13 @@ function showPartDetails(part) {
                     <br> Buy price : ${partDetails.price} $
                     <br> Sell price : ${partDetails.sellPrice} $
                     <br> Thermal throttling at : ${partDetails.thermalThrottling} °C
-                    <br> Max voltage : ${partDetails.voltage} V
+                    <br> Stock voltage : ${partDetails.voltage} V
                     <br> Ultimate binning voltage : ${partDetails.maxVoltage} V
                     <br> Wattage consumed : ${partDetails.wattage} W
                     <br> Socket : ${partDetails.cpuSocket}
                     <br> Processor series : ${partDetails.series}
                 </h3>
-                <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.cpuSocket}')">
+                <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.cpuSocket}', 'cpuSocket')">
             </div>
         `
     }
@@ -615,6 +616,11 @@ function showPartDetails(part) {
         //<br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
         //var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
         //var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100
+        if (partDetails.multiGpu != "None") {
+            var compatibleButton = `<input type="button" value="show ${partDetails.multiGpu} compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.multiGpu}', 'ramType')">`
+        } else {
+            var compatibleButton = ""
+        }
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
             <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
@@ -637,6 +643,7 @@ function showPartDetails(part) {
                     <br> Wattage consumed (at stock speeds) : ${partDetails.wattage} W
                     <br> GPU Cooling type : ${partDetails.gpuType}
                     <br> Lighting : ${partDetails.lights == ""? "None":partDetails.lights}
+                    ${compatibleButton}
                 </h3>
             </div>
         `
@@ -658,6 +665,7 @@ function showPartDetails(part) {
                         <br> Base voltage : ${partDetails.voltage}
                         <br> Max voltage (in base game) : ${partDetails.maxVoltage}
                     </h3>
+                    <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.ramType}', 'ramType')">
                 </div>
         `
     }
