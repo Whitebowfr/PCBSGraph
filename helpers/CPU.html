@@ -34620,6 +34620,7 @@ CPU
                 results[fullName].chipset = chipset
                 results[fullName].series = series
                 results[fullName].dies = diesNumber
+                results[fullName].cores = coresNumber
                 results[fullName].ocCapable = canOverclock
                 results[fullName].frequency = frequency
                 results[fullName].maxFrequency = maxFreq
@@ -34644,5 +34645,5 @@ CPU
 
         return results
     }
-    //document.write(JSON.stringify(getResults()))
+    //document.write(JSON.stringify(getResults(true)))
 </script>
