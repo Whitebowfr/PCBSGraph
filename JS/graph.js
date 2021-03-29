@@ -23,6 +23,7 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
     var maxFrequency = []
     var wattage = []
     var price = []
+    var stv = []
     var sellPrice = []
     var defaultMemory = []
     var Watts = []
@@ -108,7 +109,11 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
     }
 
     //sort in the right order (should)
-    replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value)
+    if (score.value != "STV") {
+        replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value, 0)
+    } else {
+        replacedCustom = sortArray(replacedCustom, 0, document.getElementById("sort").value)
+    }
 
     if (realTime) {
         for (cpu in replacedCustom) {
@@ -153,6 +158,7 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             Watts.push(replacedCustom[cpu].wattage)
             fullName.push(replacedCustom[cpu].fullName)
             level.push(replacedCustom[cpu].level)
+            stv.push(Math.round(replacedCustom[cpu][document.getElementById("ratioTypeFilter").value] / replacedCustom[cpu][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
         }
     }
     if (type == "gpus") {
@@ -171,6 +177,7 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             fullName.push(replacedCustom[gpu].fullName)
             dualScore.push(replacedCustom[gpu].doubleGPUGraphicsScore)
             maxDualScore.push(replacedCustom[gpu].doubleGPUMaxGraphicsScore)
+            stv.push(Math.round(replacedCustom[gpu][document.getElementById("ratioTypeFilter").value] / replacedCustom[gpu][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
         }
     }
     if (type == "ram") {
@@ -185,6 +192,7 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             level.push(replacedCustom[ram].level)
             fullName.push(replacedCustom[ram].fullName)
             size.push(replacedCustom[ram].totalSizeGB)
+            stv.push(Math.round(replacedCustom[ram][document.getElementById("ratioTypeFilter").value] / replacedCustom[ram][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
         }
     }
     if (type == "mobos") {
@@ -199,6 +207,7 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             M2Slots.push(replacedCustom[mobo].m2Slots)
             M2SlotsHeatSink.push(replacedCustom[mobo].m2SlotsSupportingHeatsinks)
             fullName.push(replacedCustom[mobo].fullName)
+            stv.push(Math.round(replacedCustom[mobo][document.getElementById("ratioTypeFilter").value] / replacedCustom[mobo][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
         }
     }
     if (type == "storage") {
@@ -211,6 +220,7 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             fullName.push(replacedCustom[s].fullName)
             level.push(replacedCustom[s].level)
             transferSpeed.push(replacedCustom[s].speed)
+            stv.push(Math.round(replacedCustom[s][document.getElementById("ratioTypeFilter").value] / replacedCustom[s][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
         }
     }
 
@@ -361,11 +371,18 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
         backgroundColor: "rgba(79, 111,189,0.5)",
         borderColor: "rgba(55,76,128,1)"
     }
+    var stvData = {
+        label: document.getElementById("ratioTypeFilter").options[document.getElementById("ratioTypeFilter").selectedIndex].text + " to " + document.getElementById("ratioTypeFilterBis").options[document.getElementById("ratioTypeFilterBis").selectedIndex].text,
+        data: stv,
+        hidden: true,
+        backgroundColor: "rgba(79, 111,189,0.5)",
+        borderColor: "rgba(55,76,128,1)"
+    }
 
     //The different datasets names are :
     //dualScoreData, vramData, memClockData, ocMemClockData, ocSingleScoreData, ocDualScoreData, scoreData, partRankingData
     //levelData, priceData, sellPriceData, freqData, maxFreqData, defaultMemoryData, wattageData, pricePerGigData, sizeData
-    //transferSpeedData
+    //transferSpeedData, stvData
 
 
     var chartData = {
@@ -375,23 +392,23 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
 
     //Push different datasets to the chart depending on the type
     if (type == "gpus") {
-        chartData.datasets.push(scoreData, ocSingleScoreData, partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData)
+        chartData.datasets.push(scoreData, ocSingleScoreData, partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData, stvData)
         legendBase.push("Score", "Part Ranking")
     }
     if (type == "cpus") {
-        chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData)
+        chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData, stvData)
         legendBase.push("Score", "Part Ranking")
     }
     if (type == "ram") {
-        chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData)
+        chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData, stvData)
         legendBase.push("Frequency", "Total size (GB)")
     }
     if (type == "mobos") {
-        chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData, )
+        chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData, stvData)
         legendBase.push("Price")
     }
     if (type == "storage") {
-        chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData)
+        chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData, stvData)
         legendBase.push("Transfer speed", "Price")
     }
 
@@ -477,8 +494,7 @@ function GRAPHupdateDropdown(type) {
     //Changes the filters depending on the type selected
     if (type == "gpus") {
         document.getElementById("customCPU").style.display = "none"
-        score.innerHTML = `
-            <option value="fullName">Name</option>
+        var numberFiltersChoice = `
             <option value="price">Price</option>
             <option value="level">Level</option>
             <option value="watts">Wattage</option>
@@ -492,28 +508,36 @@ function GRAPHupdateDropdown(type) {
             <option value="doubleGPUGraphicsScore">Dual GPU score</option>
             <option value="doubleGPUMaxGraphicsScore">OC Dual GPU Score</option>
             <option value="partRankingScore">Part Ranking</option>
+        `
+        var txtFiltersChoice = `
+            <option value="fullName">Name</option>
             <option value="gpuType">Cooling type</option>
+            <option value="STV">... to ...</option>
         `
     }
     if (type == "cpus") {
         document.getElementById("customCPU").style.display = "inline-block"
-        score.innerHTML = `
-            <option value="manufacturer">Manufacturer</option>
-            <option value="cpuSocket">Socket</option>
+        var numberFiltersChoice = `    
             <option value="basicCPUScore" selected>Score</option>
             <option value="partRankingScore">Part ranking</option>
             <option value="frequency">Frequency</option>
             <option value="maxFrequency">Max OC freq</option>
+            <option value="cores">Number of cores</option>
+            <option value="defaultMemorySpeed">Memory Speed</option>
             <option value="wattage">Wattage</option>
             <option value="price">Price</option>
-            <option value="defaultMemorySpeed">Memory Speed</option>
             <option value="level">Level unlock</option>
         `
+        var txtFiltersChoice = `
+            <option value="manufacturer">Manufacturer</option>
+            <option value="cpuSocket">Socket</option>
+            <option value="STV">... to ...</option>
+        `
+
     }
     if (type == "ram") {
         document.getElementById("customCPU").style.display = "none"
-        score.innerHTML = `
-            <option value="manufacturer">Manufacturer</option>
+        var numberFiltersChoice = `
             <option value="frequency" selected>Frequency</option>
             <option value="maxFreq">Max OC freq</option>
             <option value="pricePerGig">Price per gigabyte</option>
@@ -522,38 +546,57 @@ function GRAPHupdateDropdown(type) {
             <option value="sellPrice">Sell price</option>
             <option value="totalSizeGb">Size</option>
         `
+        var txtFiltersChoice = `
+            <option value="manufacturer">Manufacturer</option>
+            <option value="STV">... to ...</option>
+        `
+
     }
     if (type == "mobos") {
         document.getElementById("customCPU").style.display = "none"
-        score.innerHTML = `
-            <option value="manufacturer">Manufacturer</option>
-            <option value="cpuSocket">Socket</option>
-            <option value="chipset" selected>Chipset</option>
+        var numberFiltersChoice = `
             <option value="level">Level unlocked</option>
             <option value="price">Buy price</option>
             <option value="sellPrice">Sell price</option>
-            <option value="motherboardSize">Motherboard form factor</option>
             <option value="defaultMemorySpeed">Default memory speed</option>
             <option value="maxMemorySpeed">Max memory speed</option>
-            <option value="ramType">Ram type</option>
             <option value="m2Slots">M.2 Slots number</option>
             <option value="m2SlotsSupportingHeatsinks">M.2 Slots supporting heatsinks</option>
             <option value="ramSlots">RAM slots</option>
         `
+        var txtFiltersChoice = `
+            <option value="manufacturer">Manufacturer</option>
+            <option value="cpuSocket">Socket</option>
+            <option value="chipset" selected>Chipset</option>
+            <option value="motherboardSize">Motherboard form factor</option>
+            <option value="ramType">Ram type</option>
+            <option value="STV">... to ...</option>
+        `
+
     }
     if (type == "storage") {
         document.getElementById("customCPU").style.display = "none"
-        score.innerHTML = `
-            <option value="manufacturer">Manufacturer</option>
+        var numberFiltersChoice = `
             <option value="level">Level unlocked</option>
             <option value="price">Buy price</option>
             <option value="sellPrice">Sell price</option>
             <option value="size">Total size</option>
             <option value="speed" selected>Transfer speed</option>
         `
+        var txtFiltersChoice = `
+            <option value="manufacturer">Manufacturer</option>
+            <option value="STV">... to ...</option>
+        `
+
     }
+    score.innerHTML = numberFiltersChoice
+    score.innerHTML += txtFiltersChoice
+    document.getElementById("ratioTypeFilter").innerHTML = numberFiltersChoice
+    document.getElementById("ratioTypeFilterBis").innerHTML = numberFiltersChoice
+    document.getElementById("ratioTypeFilterBis").value = "price"
     document.getElementById("sortTypeFilter").innerHTML = score.innerHTML
     document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
+    document.getElementById("sortTypeFilterBis").value = "level"
 }
 
 function GRAPHstore(value) {
@@ -594,6 +637,7 @@ function showPartDetails(part) {
                     <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes":"No"}
                     <br> Unlockation level : ${partDetails.level}
                     <br> Max number of RAM sticks : ${partDetails.maxMemoryChannels}
+                    <br> Number of cores : ${partDetails.cores}
                     <br> Buy price : ${partDetails.price} $
                     <br> Sell price : ${partDetails.sellPrice} $
                     <br> Thermal throttling at : ${partDetails.thermalThrottling} °C

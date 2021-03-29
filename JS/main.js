@@ -84,10 +84,20 @@ function GRAPHextractArray(array, type) {
 //Returns the same array, with a different order
 function sortArray(array, factor, sort) {
     // true = down, false = up
-    if (sort == "true") {
-        return array.sort((a, b) => (a[factor] < b[factor]) ? 1 : -1);
+    if (factor != 0) {
+        if (sort == "true") {
+            return array.sort((a, b) => (a[factor] < b[factor]) ? 1 : -1);
+        } else {
+            return array.sort((a, b) => (a[factor] > b[factor]) ? 1 : -1);
+        }
     } else {
-        return array.sort((a, b) => (a[factor] > b[factor]) ? 1 : -1);
+        var firstFactor = document.getElementById("ratioTypeFilter").value
+        var secondFactor = document.getElementById("ratioTypeFilterBis").value
+        if (sort == "true") {
+            return array.sort((a, b) => ((a[firstFactor] / a[secondFactor]) < (b[firstFactor] / b[secondFactor])) ? 1 : -1);
+        } else {
+            return array.sort((a, b) => ((a[firstFactor] / a[secondFactor]) > (b[firstFactor] / b[secondFactor])) ? 1 : -1);
+        }
     }
 }
 
@@ -143,7 +153,8 @@ function getNumberInArray(array, key) {
     var i = 0
     var result = []
     for (el in array) {
-        if (JSON.stringify(array[el]).toLowerCase().includes(key.toLowerCase())) {
+        console.log(array[el])
+        if (JSON.stringify(array[el].fullName).toLowerCase().includes(key.toLowerCase())) {
             result.push(i)
         }
         i++

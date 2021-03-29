@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCBS Graph v0.6.4</title>
+    <title>PCBS Graph v0.6.5</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/flat_round/64/000000/bar-chart--v1.png" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <style>
         body {
             background-color: rgb(80, 80, 80);
@@ -48,8 +49,8 @@
             <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale" onclick="updateGraph(true)">
             <input type="checkbox" id="autoUpdateInputs" title="Disable auto-updating of the chart (for performance)">
             <input type="checkbox" id="enableHEM" title="Show HEM Parts" checked onclick="updateGraph(false)">
-            <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'inline-block' : 'none';" value="Show filters">
-            <div id="filters" style="background-color: white; border: 3px solid black; border-radius: 1px 1px 1px 1px; display: inline-block; position: absolute; margin-left: 3px;">
+            <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display === 'none' ? $('#filters').show('fast') : $('#filters').hide('fast');" value="Show filters">
+            <div id="filters" style="padding: 2px;display: none;background-color: white; border: 3px solid black; border-radius: 1px 1px 1px 1px; position: absolute; width: 40%; height: 10vh; top: 20vh; left: 50vw; transform: translateX(-50%); border-radius: 10px; backdrop-filter: blur(10px);">
                 <span style="color: black">Filters :</span>
                 <select id="sortTypeFilter">
                 </select>
@@ -60,7 +61,7 @@
                 </select>
                 <input placeholder="value" oninput="updateGraph(false)" id="filterValue" value="">
                 </br>
-                <select id="sortTypeFilterBis" style="margin-left: 55px">
+                <select id="sortTypeFilterBis" style="margin-left: 65px">
                 </select>
                 <select id="sortOrderFilterBis">
                     <option value="==">=</option>
@@ -68,11 +69,18 @@
                     <option value="<" selected><</option>
                 </select>
                 <input placeholder="second value (optional)" oninput="updateGraph(false)" id="filterValueBis">
+                <br>
+                <span style="color: black">Ratio :</span>
+                <select id="ratioTypeFilter" onchange="updateGraph(false)" style="margin-left: 12px;">
+                </select>
+                <span style="color: black;"> / </span>
+                <select id="ratioTypeFilterBis" onchange="updateGraph(false)">
+                </select>
             </div>
             <input type="button" value="To top" style="float: right; margin-right: 10px; margin-left: 5px; margin-top: 2px;" id="scrollToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
             <input type="button" value="&#8593" style="float: right; margin-top: 2px;" id="scrollToPrevious">
             <input type="button" value="&#8595" style="float: right; margin-top: 2px;" id="scrollToNext">
-            <p style="float: right; margin: 2px 10px 0 0; color: rgb(175, 171, 171)" id="scrollNumberIndic">0 / 517</p>
+            <p style="float: right; margin: 2px 10px 0 0; color: rgb(133, 124, 124)" id="scrollNumberIndic">0 / 517</p>
             <input type="text" id="search" placeholder="search input" oninput="scrollToSearch()" style="float: right; margin-right: 10px; margin-top: 2px;">
         </div>
         <div id="test" style="margin-top: 50px;">
@@ -111,6 +119,12 @@
             showPartDetails(tickClicked)
         })
         window.addEventListener('scroll', scrollToSearch)
+
+        document.addEventListener("keydown", function(evt) {
+            if (evt.keyCode == 27) {
+                $("#filters").hide("fast")
+            }
+        })
     </script>
 </body>
 
