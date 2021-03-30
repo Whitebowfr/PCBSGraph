@@ -108,19 +108,19 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
         replacedCustom = currentData
     }
 
-    //sort in the right order (should)
-    if (score.value != "STV") {
-        replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value, 0)
-    } else {
-        replacedCustom = sortArray(replacedCustom, 0, document.getElementById("sort").value)
-    }
-
     if (realTime) {
         for (cpu in replacedCustom) {
             replacedCustom[cpu].basicCustomScore = GRAPHgetCPUScore(replacedCustom[cpu], 298, document.getElementById("ram").value)
             replacedCustom[cpu].partCustomRanking = GRAPHgetCPUScore(replacedCustom[cpu], 100, document.getElementById("ram").value)
         }
         replacedCustom = sortArray(replacedCustom, "basicCustomScore", document.getElementById("sort").value)
+    }
+
+    //sort in the right order (should)
+    if (score.value != "STV") {
+        replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value, 0)
+    } else {
+        replacedCustom = sortArray(replacedCustom, 0, document.getElementById("sort").value)
     }
 
     if (id('ram').value != null && score.value == "defaultMemorySpeed") {
