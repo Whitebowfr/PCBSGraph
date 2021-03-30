@@ -519,6 +519,7 @@ function GRAPHupdateDropdown(type) {
         document.getElementById("customCPU").style.display = "inline-block"
         var numberFiltersChoice = `    
             <option value="basicCPUScore" selected>Score</option>
+            <option value="maxCPUScore">OC Score</option>
             <option value="partRankingScore">Part ranking</option>
             <option value="frequency">Frequency</option>
             <option value="maxFrequency">Max OC freq</option>
