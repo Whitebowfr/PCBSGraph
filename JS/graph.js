@@ -113,12 +113,15 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             replacedCustom[cpu].basicCustomScore = GRAPHgetCPUScore(replacedCustom[cpu], 298, document.getElementById("ram").value)
             replacedCustom[cpu].partCustomRanking = GRAPHgetCPUScore(replacedCustom[cpu], 100, document.getElementById("ram").value)
         }
-        replacedCustom = sortArray(replacedCustom, "basicCustomScore", document.getElementById("sort").value)
     }
 
     //sort in the right order (should)
     if (score.value != "STV") {
-        replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value, 0)
+        if (score.value == "basicCPUScore" && realTime) {
+            replacedCustom = sortArray(replacedCustom, "basicCustomScore", document.getElementById("sort").value, 0)
+        } else {
+            replacedCustom = sortArray(replacedCustom, score.value, document.getElementById("sort").value, 0)
+        }
     } else {
         replacedCustom = sortArray(replacedCustom, 0, document.getElementById("sort").value)
     }
@@ -390,26 +393,42 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
         datasets: []
     }
 
+
     //Push different datasets to the chart depending on the type
+
     if (type == "gpus") {
         chartData.datasets.push(scoreData, ocSingleScoreData, partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData, stvData)
-        legendBase.push("Score", "Part Ranking")
     }
     if (type == "cpus") {
         chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData, stvData)
-        legendBase.push("Score", "Part Ranking")
     }
     if (type == "ram") {
         chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData, stvData)
-        legendBase.push("Frequency", "Total size (GB)")
     }
     if (type == "mobos") {
         chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData, stvData)
-        legendBase.push("Price")
     }
     if (type == "storage") {
         chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData, stvData)
-        legendBase.push("Transfer speed", "Price")
+    }
+
+    //reset the legend on type change
+    if (previousType != type) {
+        if (type == "gpus") {
+            legendBase.push("Score", "Part Ranking")
+        }
+        if (type == "cpus") {
+            legendBase.push("Score", "Part Ranking")
+        }
+        if (type == "ram") {
+            legendBase.push("Frequency", "Total size (GB)")
+        }
+        if (type == "mobos") {
+            legendBase.push("Price")
+        }
+        if (type == "storage") {
+            legendBase.push("Transfer speed", "Price")
+        }
     }
 
     for (bar in chartData.datasets) {
@@ -468,20 +487,22 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
             },
         }
     });
-    //Keep score of the enabled datasets
+
+    //Keep score of the enabled datasets (doesnt work very well)
     var countLegend = function(legend) {
         console.log(legend.text)
-        for (leg in legendBase) {
-            console.log(leg)
-            if (legendBase[leg] == legend.text) {
-                delete legendBase[leg]
+        for (type in legendBase) {
+            if (legend.text.toLowerCase() == legendBase[type].toLowerCase()) {
+                var index = legendBase.indexOf(legend.text);
+                if (index > -1) {
+                    legendBase.splice(index, 1);
+                }
                 console.log(legendBase)
                 return
             }
         }
-        if (!getIfElIn(legendBase, legend.text)) {
-            legendBase.push(legend.text)
-        }
+        legendBase.push(legend.text)
+        console.log(legendBase)
     }
     previousType = type
     console.log(previousType)
@@ -685,7 +706,7 @@ function showPartDetails(part) {
                     <br> Buy price : ${partDetails.price}
                     <br> Sell price : ${partDetails.sellPrice}
                     <br> Unlocked at level : ${partDetails.level}
-                    <br> Wattage consumed (at stock speeds) : ${partDetails.wattage} W
+                    <br> Wattage consumed (at stock speeds) : ${partDetails.watts} W
                     <br> GPU Cooling type : ${partDetails.gpuType}
                     <br> Lighting : ${partDetails.lights == ""? "None":partDetails.lights}
                     ${compatibleButton}
@@ -755,12 +776,12 @@ function showPartDetails(part) {
     }
     if (imageExists("imagesBackup/Texture2D/" + partDetails.iconPath + ".png")) {
         customText += `
-            <div style="display: inline-block">
+            <div style="display: inline-block; border: 2px solid black; float: right;">
                 <img src="imagesBackup/Texture2D/${partDetails.iconPath}.png"></img>
             </div>`
     } else {
         customText += `
-            <div style="display: inline-block">
+            <div style="display: inline-block; border: 2px solid black; float: right;">
                 <img src="imagesBackup/Texture2D/ERROR_NOT_FOUND.png"></img>
             </div>`
     }

@@ -42,7 +42,6 @@ function getNonEmptyEl(obj) {
 //Returns a boolean
 function getIfElIn(obj, txt) {
     for (el in obj) {
-        console.log(obj[el])
         if (obj[el] == txt) {
             return true
         }
@@ -153,7 +152,6 @@ function getNumberInArray(array, key) {
     var i = 0
     var result = []
     for (el in array) {
-        console.log(array[el])
         if (JSON.stringify(array[el].fullName).toLowerCase().includes(key.toLowerCase())) {
             result.push(i)
         }
@@ -179,8 +177,7 @@ function scrollToSearch() {
         toScrollInGraph.push(myChart.boxes[3]._labelItems[toScroll[tick]].y)
     }
 
-    console.log(toScrollInGraph)
-        //return the index of the closest y value
+    //return the index of the closest y value
     var closest = toScrollInGraph.reduce((a, b) => {
         return Math.abs(b - window.scrollY) < Math.abs(a - window.scrollY) ? b : a
     });
