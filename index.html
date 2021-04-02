@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCBS Graph v0.6.7</title>
+    <title>PCBS Graph v0.6.8</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/flat_round/64/000000/bar-chart--v1.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <style>
@@ -98,22 +98,27 @@
         sessionStorage.setItem("freq", "[]")
         GRAPHupdateDropdown("cpus");
         document.getElementById("myChart").addEventListener("click", function(e) {
+            //get Y click position on the graph instead of the page
             var spaceFromTop = window.pageYOffset + document.getElementById("myChart").getBoundingClientRect().top
-            var y = e.pageY - spaceFromTop //get Y click position on the graph instead of the page
+            var y = e.pageY - spaceFromTop
+
+            //if clicked on the legend
             if (y <= myChart.boxes[0].height) {
                 return false
-            } //if clicked on the legend
-            var tickNumber = Math.round(y / (myChart.boxes[3].height / myChart.boxes[3].ticks.length))
-            if (type.value == "gpus") {
-                tickNumber -= 2 //dis is because the legend on the gpus is 2 lines high I think (not sure but it works)
-            } else {
-                tickNumber -= 1
             }
+            var tickNumber = Math.round(y / (myChart.boxes[3].height / myChart.boxes[3].ticks.length))
+            tickNumber -= 1
             var tickClicked = myChart.boxes[3].ticks[tickNumber]
             document.getElementById("divCPUGraph").style.display = "none"
             document.getElementById("divPartShower").style.display = "block"
             document.getElementById("backButton").style.display = "block"
-            window.addEventListener("keyup", function(e) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
+
+            //Back shortcut (Esc)
+            window.addEventListener("keydown", function(e) {
                 goBack(e)
             })
             showPartDetails(tickClicked)

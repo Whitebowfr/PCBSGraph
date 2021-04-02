@@ -1,7 +1,7 @@
 var previousType
 var currentData = []
 
-function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
+function updateGraph(priority, compatibleSort) {
     currentData = []
     var replacedCustom = []
 
@@ -21,14 +21,12 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
     var maxDualScore = []
     var frequency = []
     var maxFrequency = []
-    var wattage = []
     var price = []
     var stv = []
     var sellPrice = []
     var defaultMemory = []
     var Watts = []
     var level = []
-    var chipsetSeries = []
     var vram = []
     var memClock = []
     var maxMemClock = []
@@ -68,9 +66,16 @@ function updateGraph(priority, compatibleSort, typeOfCompatibleSort) {
         }
     }
 
-    //socket filter
+    //socket and multiGPU filter
     if (compatibleSort != undefined) {
-        currentData = filterArray(currentData, compatibleSort)
+        for (item in compatibleSort) {
+            if (typeof compatibleSort[item] == "object") {
+                //This is to check if the motherboard can fit both GPUs (some GPUs are 3 slots tall)
+                currentData = getFilteredArrayGreater(currentData, compatibleSort[item].key, compatibleSort[item].low, compatibleSort[item].high)
+            } else {
+                currentData = filterArray(currentData, compatibleSort[item])
+            }
+        }
     }
 
     //second filter
@@ -650,67 +655,102 @@ function showPartDetails(part) {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
             <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                <h3>
-                    Base frequency of this CPU : ${partDetails.maxFrequency} MHz
-                    <br> is overclockable : ${partDetails.canOverclock}
-                    <br> Max frequency (achievable by 100% of the chips at stock voltage) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency:"Can't OC"}
-                    <br> Theoric maximum frequency (with binning, on stock voltage) : ${partDetails.canOverclock == "Yes" ? partDetails.maxFrequency*1.05:"Can't OC"}
-                    <br> Is this CPU in shop ? : ${partDetails.inShop}
-                    <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes":"No"}
-                    <br> Unlockation level : ${partDetails.level}
-                    <br> Max number of RAM sticks : ${partDetails.maxMemoryChannels}
-                    <br> Number of cores : ${partDetails.cores}
-                    <br> Buy price : ${partDetails.price} $
-                    <br> Sell price : ${partDetails.sellPrice} $
-                    <br> Thermal throttling at : ${partDetails.thermalThrottling} °C
-                    <br> Stock voltage : ${partDetails.voltage} V
-                    <br> Ultimate binning voltage : ${partDetails.maxVoltage} V
-                    <br> Wattage consumed : ${partDetails.wattage} W
-                    <br> Socket : ${partDetails.cpuSocket}
-                    <br> Processor series : ${partDetails.series}
-                </h3>
-                <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.cpuSocket}', 'cpuSocket')">
+            <h3 style="margin: 0px;">CPU</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Socket : ${partDetails.cpuSocket}
+                <br> <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, ['${partDetails.cpuSocket}'])">
+                <br> Processor series : ${partDetails.series}
+                <br> Max number of RAM sticks : ${partDetails.maxMemoryChannels * 2}
+                <br> Number of cores : ${partDetails.cores}
+                ${partDetails.isHEMPart ? "<br> Modded" : ""}
+            </p>
+            <h3 style="margin: 0px;">Clocks</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Base frequency : ${partDetails.frequency} MHz
+                <br> ${partDetails.canOverclock == "Yes" ? "Can be overclocked :" : "Cannot be overclocked"}
+                ${partDetails.canOverclock == "Yes" ? '<br> Max frequency (stock voltage) : ' + partDetails.maxFrequency + " MHz":""}
+                ${partDetails.canOverclock == "Yes" ? '<br> Theoretical max frequency (not sure) : ' + partDetails.maxFrequency*110/100*1.05 + " MHz":""}
+            </p>
+            <h3 style="margin: 0px;">Scores</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Base score : ${partDetails.basicCPUScore}
+                <br> OC score : ${partDetails.maxCPUScore}
+            </p>
+            <h3 style="margin: 0px;">Power / thermals</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Stock voltage : ${partDetails.voltage} V
+                <br> Theoretical max voltage : ${partDetails.maxVoltage} V
+                <br> Wattage consumed : ${partDetails.wattage} W
+                <br> Thermal throttling at : ${partDetails.thermalThrottling} °C
+            </p>
+            <h3 style="margin: 0px;">Shop</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Buy price : ${partDetails.price} $
+                <br> Sell price : ${partDetails.sellPrice} $
+                <br> Unlockation level : ${partDetails.level}
+            </p>
             </div>
         `
     }
     if (type == "gpus") {
-        //var cc = partDetails.baseCoreClock
-        //var mc = partDetails.baseMemClock
-        //var mcc = partDetails.maxCoreClock
-        //var mmc = partDetails.maxMemClock
-        //<br> Theorical max core frequency (with binning) : ${maxOCGpuCoreClock}
-        //<br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
-        //var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
-        //var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100
+        /*var cc = partDetails.baseCoreClock
+        var mc = partDetails.baseMemClock
+        var mcc = partDetails.maxCoreClock
+        var mmc = partDetails.maxMemClock
+        <br> Theorical max core frequency (with binning) : ${maxOCGpuCoreClock}
+        <br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
+        var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
+        var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100*/
         if (partDetails.multiGpu != "None") {
-            var compatibleButton = `<input type="button" value="show ${partDetails.multiGpu} compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.multiGpu}', 'ramType')">`
+            var compatibleButton = `<input type="button" value="show ${partDetails.multiGpu} compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, ['${partDetails.multiGpu}', {key: 'maxMultiSize', low: ${partDetails.slotSize}, high: 99,}])">`
         } else {
             var compatibleButton = ""
         }
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
             <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                <h3>
+                <h3 style="margin: 0px;">GPU</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Chipset : ${partDetails.chipset}
+                    <br> Chipset series : ${partDetails.chipsetSeries}
+                    <br> Chipset brand : ${partDetails.chipsetBrand}
+                    <br> VRAM : ${partDetails.vram} GB
+                    <br> GPU Cooling type : ${partDetails.gpuType}
+                    <br> Lighting : ${partDetails.lights == ""? "None":partDetails.lights}
+                    <br> Size (in slots) : ${partDetails.slotSize}
+                    ${partDetails.isHEMPart ? "<br> Modded" : ""}
+                </p>
+                <h3 style="margin: 0px;">Clocks</h3>
+                <p style="margin: 0px; margin-left: 20px">
                     Base core frequency : ${partDetails.baseCoreClock}
                     <br> Base memory frequency : ${partDetails.baseMemClock}
                     <br> Max core frequency : ${partDetails.maxCoreClock}
                     <br> Max memory frequency : ${partDetails.maxMemClock}
-                    <br> Chipset : ${partDetails.chipset}
-                    <br> Chipset series : ${partDetails.chipsetSeries}
-                    <br> Chipset brand : ${partDetails.chipsetBrand}
-                    <br> Multi GPU support : ${partDetails.multiGpu}
-                    <br> VRAM (video RAM) : ${partDetails.vram} GB
+                </p>
+                <h3 style="margin: 0px;">Scores</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Base score : ${partDetails.singleGPUGraphicsScore}
+                    <br> OC score : ${partDetails.singleGPUMaxGraphicsScore}
+                    <br> Dual score : ${partDetails.doubleGPUGraphicsScore}
+                    <br> OC dual score : ${partDetails.doubleGPUMaxGraphicsScore}
+                    <br> Part ranking : ${partDetails.partRankingScore}
+                </p>
+                <h3 style="margin: 0px;">Thermals</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Wattage consumed (at stock speeds) : ${partDetails.watts} W
                     <br> Thermal throttling (bsod) at : ${partDetails.thermalThrottling} °C
-                    <br> Is this part in shop ? : ${partDetails.isInShop}
-                    <br> Is this a modded part ? : ${partDetails.isHEMPart? "Yes": "No"}
-                    <br> Buy price : ${partDetails.price}
+                </p>
+                <h3 style="margin: 0px;">Multi GPU</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Multi GPU support : ${partDetails.multiGpu}
+                    <br>${compatibleButton}
+                </p>
+                <h3 style="margin: 0px;">Shop</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Buy price : ${partDetails.price}
                     <br> Sell price : ${partDetails.sellPrice}
                     <br> Unlocked at level : ${partDetails.level}
-                    <br> Wattage consumed (at stock speeds) : ${partDetails.watts} W
-                    <br> GPU Cooling type : ${partDetails.gpuType}
-                    <br> Lighting : ${partDetails.lights == ""? "None":partDetails.lights}
-                    ${compatibleButton}
-                </h3>
+                </p>
             </div>
         `
     }
@@ -718,20 +758,24 @@ function showPartDetails(part) {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                    <h3>
-                        Base frequency : ${partDetails.frequency}
-                        <br> Max frequency : ${partDetails.maxFrequency}
-                        <br> Manufacturer : ${partDetails.manufacturer}
-                        <br> Size of one stick : ${partDetails.totalSizeGB}
-                        <br> Type of RAM : ${partDetails.ramType}
-                        <br> Buy price : ${partDetails.price}
-                        <br> Sale price : ${partDetails.sellPrice}
-                        <br> Unlocked at level : ${partDetails.level}
-                        <br> Lightning : ${partDetails.lightning}
-                        <br> Base voltage : ${partDetails.voltage}
-                        <br> Max voltage (in base game) : ${partDetails.maxVoltage}
-                    </h3>
-                    <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, '${partDetails.ramType}', 'ramType')">
+                        <h3 style="margin: 0px;">Technical</h3>
+                        <p style="margin: 0px; margin-left: 20px">
+                            Base frequency : ${partDetails.frequency} MHz
+                            <br> Max frequency : ${partDetails.maxFrequency} MHz
+                            <br> Base voltage : ${partDetails.voltage} V
+                            <br> Max voltage (in base game) : ${partDetails.maxVoltage} V
+                            <br> Theoretical max voltage (in base game) : ${Number(partDetails.maxVoltage) * 110 / 100 * 1.05} V
+                            <br> Size of one stick : ${partDetails.totalSizeGB} GB
+                            ${partDetails.ramType == "DDR4" ? "" : "<br> Special type of RAM : " + partDetails.ramType}
+                            ${partDetails.lightning == "None" ? "" : "<br> Lightning : " + partDetails.lightning}
+                        </p>
+                        <h3 style="margin: 0px;">Shop</h3>
+                            Manufacturer : ${partDetails.manufacturer}
+                            <br> Buy price : ${partDetails.price}
+                            <br> Sale price : ${partDetails.sellPrice}
+                            <br> Unlocked at level : ${partDetails.level}
+                        </p>
+                    <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, ['${partDetails.ramType}'])">
                 </div>
         `
     }
@@ -739,19 +783,40 @@ function showPartDetails(part) {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                    <h3>
-                        Socket : ${partDetails.cpuSocket}
-                        <br> Chipset : ${partDetails.chipset}
-                        <br> Support overclocking : ${partDetails.canOverclock}
-                        <br> Number of RAM slots : ${partDetails.ramSlots}
-                        <br> Type of RAM : ${partDetails.ramType}
-                        <br> Buy price : ${partDetails.price}
-                        <br> Sale price : ${partDetails.sellPrice}
-                        <br> Unlocked at level : ${partDetails.level}
-                        <br> Lightning : ${partDetails.lightning}
-                        <br> Support SLI : ${partDetails.supportSLI}
-                        <br> Support Crossfire : ${partDetails.supportCrossfire}
-                    </h3>
+                        <h3 style="margin: 0px;">CPU</h3>
+                        <p style="margin: 0px; margin-left: 20px">
+                            Socket : ${partDetails.cpuSocket}
+                            <br> Chipset : ${partDetails.chipset}
+                            <br> Support overclocking : ${partDetails.canOverclock}
+                        </p>
+                        <h3 style="margin: 0px;">RAM</h3>
+                            <p style="margin: 0px; margin-left: 20px">
+                            Number of RAM slots : ${partDetails.ramSlots}
+                            ${partDetails.ramType == "DDR4" ? "" : "<br> Special type of RAM : " + partDetails.ramType}
+                            <br> Max RAM Speed : ${partDetails.maxMemorySpeed}
+                        </p>
+                        <h3 style="margin: 0px;">Shop</h3>
+                        <p style="margin: 0px; margin-left: 20px">
+                            Buy price : ${partDetails.price}
+                            <br> Sale price : ${partDetails.sellPrice}
+                            <br> Unlocked at level : ${partDetails.level}
+                        </p>
+                        <h3 style="margin: 0px;">GPU</h3>
+                        <p style="margin: 0px; margin-left: 20px">
+                            ${partDetails.supportCrossfire == "Yes" ? partDetails.supportSLI == "Yes" ? "Multi GPU: SLI/Crossfire" : "Multi GPU: Crossfire" : "Multi GPU: None"}
+                        </p>
+                        <h3 style="margin: 0px;">Storage</h3>
+                        <p style="margin: 0px; margin-left: 20px">
+                            M.2 Slots : ${partDetails.m2Slots}
+                            <br> Number of M.2 slots supporting Heatsinks : ${partDetails.m2SlotsSupportingHeatsinks}
+                            <br> SATA slots usable : ${partDetails.sataSlots}
+                        </p>
+                        <h3 style="margin: 0px;">Technical</h3>
+                        <p style="margin: 0px; margin-left: 20px">
+                            Size : ${partDetails.motherboardSize}
+                            ${partDetails.lightning == "None" ? "" : "<br> Lightning : " + partDetails.lightning}
+                            ${partDetails.isHEMPart ? "<br> Modded" : ""}
+                        </p>
                 </div>
         `
     }
@@ -759,18 +824,22 @@ function showPartDetails(part) {
         var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
-                    <h3>
-                        Total size (in GB) : ${partDetails.sizeGB}
-                        <br> Transfer speed : ${partDetails.speed}
-                        <br> Manufacturer : ${partDetails.manufacturer}
-                        <br> Price : ${partDetails.price}
-                        <br> Sell price : ${partDetails.sellPrice}
-                        <br> Unlocked at level : ${partDetails.level}
-                        <br> Type : ${partDetails.type}
-                        <br> Uses heatsink : ${partDetails.includesHeatsink}
-                        <br> Heatsink T H I C Cness: ${partDetails.heatsinkThickness}
-                        <br> Lightning : ${partDetails.lightning}
-                    </h3>
+                <h3 style="margin: 0px;">Specifications</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Total size (in GB) : ${partDetails.sizeGB}
+                    <br> Transfer speed : ${partDetails.speed}
+                    <br> Manufacturer : ${partDetails.manufacturer}
+                    <br> Type : ${partDetails.type}
+                    ${partDetails.type == "M2" ? "<br> Uses heatsink : " + partDetails.includesHeatsink + (partDetails.includesHeatsink == "Yes" ? "<br> Heatsink T H I C Cness: " + partDetails.heatsinkThickness: "") : ""}
+                    ${partDetails.lightning != "N/A" ? "<br> Lightning : " + partDetails.lightning : ""}
+                    ${partDetails.isHEMPart ? "<br> Modded" : ""}
+                </p>
+                <h3 style="margin: 0px;">Shop</h3>
+                <p style="margin: 0px; margin-left: 20px">
+                    Price : ${partDetails.price}
+                    <br> Sell price : ${partDetails.sellPrice}
+                    <br> Unlocked at level : ${partDetails.level}
+                </p>
                 </div>
         `
     }

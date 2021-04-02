@@ -79,6 +79,18 @@ function GRAPHextractArray(array, type) {
     return array
 }
 
+//Filter an array from a factor, and two limits
+//Returns an array
+function getFilteredArrayGreater(array, factor, lowerLimit, upperLimit) {
+    var finishedResult = []
+    for (part in array) {
+        console.log(isNaN(array[part][factor]))
+        if (isNaN(array[part][factor])) continue
+        if (Number(array[part][factor]) > lowerLimit && Number(array[part][factor]) < upperLimit) finishedResult.push(array[part])
+    }
+    return finishedResult
+}
+
 //Sort an array
 //Returns the same array, with a different order
 function sortArray(array, factor, sort) {
