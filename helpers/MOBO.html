@@ -11390,15 +11390,11 @@ Motherboard
                 var lightning = data.rows[row].cells[31].innerText == "N/A" ? "None" : data.rows[row].cells[31].innerText
 
                 var assetPathNormalized = assetPath.replaceAll("\\", "/")
-                var m2Slots =
-                    moboModels[assetPathNormalized]["M.2 Slots"]
-                var m2SlotsSupportingHeatsinks =
-                    moboModels[assetPathNormalized]["M.2 Slots Supporting Heatsinks"]
-                var ramSlots =
-                    moboModels[assetPathNormalized]["RAM Slots"]
-                var sataSlots =
-                    moboModels[assetPathNormalized]["Sata Slots Usable"]
-
+                var m2Slots = moboModels[assetPathNormalized]["M.2 Slots"]
+                var m2SlotsSupportingHeatsinks = moboModels[assetPathNormalized]["M.2 Slots Supporting Heatsinks"]
+                var ramSlots = moboModels[assetPathNormalized]["RAM Slots"]
+                var sataSlots = moboModels[assetPathNormalized]["SATA Slots Usable"]
+                var multiGPUMaxSlotSize = moboModels[assetPathNormalized]["Dual GPU Max Slot Size"]
                 var isHEMPart = (tableNumber == 1)
                 var fullName = manufacturer + " " + partName
 
@@ -11420,9 +11416,11 @@ Motherboard
                 results[fullName].ramType = ramType
                 results[fullName].supportSLI = supportSLI
                 results[fullName].supportCrossfire = supportCrossfire
+                results[fullName].maxMultiSize = multiGPUMaxSlotSize
                 results[fullName].canOverclock = canOverclock
                 results[fullName].m2Slots = m2Slots
                 results[fullName].m2SlotsSupportingHeatsinks = m2SlotsSupportingHeatsinks
+                results[fullName].sataSlotsUsable = sataSlots
                 results[fullName].ramSlots = ramSlots
                 results[fullName].sataSlots = sataSlots
                 results[fullName].lightning = lightning
@@ -11432,4 +11430,8 @@ Motherboard
 
         return results
     }
+
+    setTimeout(function() {
+        document.write(JSON.stringify(getResults())), console.log("e")
+    }, 500)
 </script>

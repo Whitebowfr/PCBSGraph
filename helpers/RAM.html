@@ -14597,4 +14597,8 @@ RAM
 
         return results
     }
+
+    setTimeout(function() {
+        document.write(JSON.stringify(getResults()))
+    }, 500)
 </script>
