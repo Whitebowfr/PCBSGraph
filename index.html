@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCBS Graph v0.6.8 (PCBS 1.10.8 | HEM 2.5)</title>
+    <title>PCBS Graph v0.6.8</title>
     <link rel="icon" type="image/png" href="https://img.icons8.com/flat_round/64/000000/bar-chart--v1.png" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <style>
@@ -37,6 +37,7 @@
                 <option value="ram">RAM</option>
                 <option value="mobos">Motherboards</option>
                 <option value="storage">Storage</option>
+                <option value="coolers">Cooling</option>
             </select>
             <select id="sortType" onchange="updateGraph(true)">
             </select>
@@ -49,7 +50,7 @@
             <input type="checkbox" id="logarithmicCheck" checked title="Enable logarithmic scale" onclick="updateGraph(true)">
             <input type="checkbox" id="autoUpdateInputs" title="Disable auto-updating of the chart (for performance)">
             <input type="checkbox" id="enableHEM" title="Show HEM Parts" checked onclick="updateGraph(false)">
-            <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display === 'none' ? $('#filters').show('fast') : $('#filters').hide('fast');" value="Show filters">
+            <input type="button" id="enableFilters" onclick="this.nextElementSibling.style.display === 'none' ? $('#filters').show('fast') : $('#filters').hide('fast'); window.addEventListener('click', handleClickFilters)" value="Show filters">
             <div id="filters" style="padding: 2px;display: none;background-color: white; border: 3px solid black; border-radius: 1px 1px 1px 1px; position: absolute; width: 40%; height: 10vh; top: 20vh; left: 50vw; transform: translateX(-50%); border-radius: 10px; backdrop-filter: blur(10px);">
                 <span style="color: black">Filters :</span>
                 <select id="sortTypeFilter">

@@ -49,7 +49,7 @@ function getIfElIn(obj, txt) {
     return false
 }
 
-//simple function that reduce line size by a lot (and is also never used)
+//simple function that reduce line size by a lot (and is also never used because we can use jquery for this)
 function id(id) {
     return document.getElementById(id)
 }
@@ -61,6 +61,7 @@ function goBack(e) {
         document.getElementById("backButton").style.display = "none"
         document.getElementById("divCPUGraph").style.display = "block"
     }
+    window.scrollTo({ top: myChart.boxes[3]._labelItems[sessionStorage.getItem("currentlyScrolledTo") - 1].y })
     window.removeEventListener("keyup", function(e) { goBack(e) })
 }
 
@@ -68,7 +69,7 @@ function goBack(e) {
 //should return an Object containing each parts from the type specified
 function GRAPHextractArray(array, type) {
     for (part in myData[type]) {
-        if (myData[type][part].inShop == "Yes" || myData[type][part].isInShop == "Yes" && myData[type][part].singleGPUGraphicsScore != 0) {
+        if (myData[type][part].inShop == "Yes" || myData[type][part].isInShop == "Yes" && myData[type][part].singleGPUGraphicsScore != 0 || type == "coolers") {
             if (!id("enableHEM").checked && myData[type][part].isHEMPart) {
                 continue
             } else {
@@ -102,8 +103,8 @@ function sortArray(array, factor, sort) {
             return array.sort((a, b) => (a[factor] > b[factor]) ? 1 : -1);
         }
     } else {
-        var firstFactor = document.getElementById("ratioTypeFilter").value
-        var secondFactor = document.getElementById("ratioTypeFilterBis").value
+        let firstFactor = document.getElementById("ratioTypeFilter").value
+        let secondFactor = document.getElementById("ratioTypeFilterBis").value
         if (sort == "true") {
             return array.sort((a, b) => ((a[firstFactor] / a[secondFactor]) < (b[firstFactor] / b[secondFactor])) ? 1 : -1);
         } else {
@@ -209,7 +210,7 @@ function scrollToSearch() {
         }
 
         //scroll (in px) = height mentioned in the chart - height of the previous line
-        var y = myChart.boxes[3]._labelItems[toScroll[it]].y - myChart.boxes[3]._labelItems[toScroll[it]].font.lineHeight
+        let y = myChart.boxes[3]._labelItems[toScroll[it]].y - myChart.boxes[3]._labelItems[toScroll[it]].font.lineHeight
 
         //We need to remove temporarily the window event so it doesn't get triggered when scrolling with the buttons
         window.removeEventListener('scroll', scrollToSearch)
@@ -223,6 +224,7 @@ function scrollToSearch() {
     var el = document.getElementById("scrollToPrevious"),
         elClone = el.cloneNode(true)
     el.parentNode.replaceChild(elClone, el)
+
     document.getElementById("scrollToPrevious").addEventListener("click", function() {
         it--
 
@@ -231,10 +233,36 @@ function scrollToSearch() {
             it = toScroll.length - 1
         }
 
-        var y = myChart.boxes[3]._labelItems[toScroll[it]].y - myChart.boxes[3]._labelItems[toScroll[it]].font.lineHeight
+        let y = myChart.boxes[3]._labelItems[toScroll[it]].y - myChart.boxes[3]._labelItems[toScroll[it]].font.lineHeight
         window.removeEventListener('scroll', scrollToSearch)
         window.scrollTo({ top: y, behavior: 'smooth' })
         indic.innerText = (it + 1) + " / " + toScroll.length
         setTimeout(() => { window.addEventListener('scroll', scrollToSearch) }, 200)
     })
+}
+
+//https://stackoverflow.com/questions/19799777/how-to-add-transparency-information-to-a-hex-color-code
+//Returns an hex code
+const setOpacity = (hex, alpha) => `${hex}${Math.floor(alpha * 255).toString(16).padStart(2, 0)}`;
+
+//https://supunkavinda.blog/js-detect-outside-click
+//Returns a boolean
+function outsideClick(event, notelem) {
+    notelem = $(notelem); // jquerize (optional)
+    // check outside click for multiple elements
+    var clickedOut = true,
+        i, len = notelem.length;
+    for (i = 0; i < len; i++) {
+        if (event.target == notelem[i] || notelem[i].contains(event.target)) {
+            clickedOut = false;
+        }
+    }
+    if (clickedOut) return true;
+    else return false;
+}
+
+function handleClickFilters(e) {
+    if (outsideClick(e, document.getElementById("filters")) && outsideClick(e, document.getElementById("enableFilters"))) {
+        $("#filters").hide("fast")
+    }
 }

@@ -13,28 +13,11 @@ function updateGraph(priority, compatibleSort) {
     var filterType = document.getElementById("sortTypeFilter").value
     var filterTypeBis = document.getElementById("sortTypeFilterBis").value
 
-    var basicScore = []
-    var maxBasicScore = []
-    var partRanking = []
-    var fullName = []
-    var dualScore = []
-    var maxDualScore = []
-    var frequency = []
-    var maxFrequency = []
-    var price = []
-    var stv = []
-    var sellPrice = []
-    var defaultMemory = []
-    var Watts = []
-    var level = []
-    var vram = []
-    var memClock = []
-    var maxMemClock = []
     var scaleType
-    console.log(typeof previousType, type, legendBase)
 
     //Reset the legend if the type was changed
     if (typeof previousType != "undefined" && previousType != type) {
+        window.scrollTo({ top: 0 })
         legendBase = []
     }
 
@@ -54,9 +37,9 @@ function updateGraph(priority, compatibleSort) {
 
     //first filter
     if (filterValue != "") {
-        var sortOrder = document.getElementById("sortOrderFilter").value
+        let sortOrder = document.getElementById("sortOrderFilter").value
         if (sortOrder == "==") {
-            currentData = currentData.filter(part => part[filterType] == filterValue)
+            currentData = currentData.filter(part => part[filterType].toString().includes(filterValue))
         }
         if (sortOrder == ">") {
             currentData = currentData.filter(part => part[filterType] > filterValue)
@@ -80,9 +63,9 @@ function updateGraph(priority, compatibleSort) {
 
     //second filter
     if (filterValueBis != "") {
-        var sortOrder = document.getElementById("sortOrderFilterBis").value
+        let sortOrder = document.getElementById("sortOrderFilterBis").value
         if (sortOrder == "==") {
-            currentData = currentData.filter(part => part[filterTypeBis] == filterValueBis)
+            currentData = currentData.filter(part => part[filterTypeBis].includes(filterValueBis))
         }
         if (sortOrder == ">") {
             currentData = currentData.filter(part => part[filterTypeBis] > filterValueBis)
@@ -135,101 +118,27 @@ function updateGraph(priority, compatibleSort) {
         alert("When using custom ram speed, the bars won't change, the score will do tho")
     }
 
-    //Push the correct information to the arrays later gived to the graph
-    if (type == "cpus") {
-        for (cpu in replacedCustom) {
-            if (realTime) {
-                if (replacedCustom[cpu].basicCustomScore < 0) {
-                    replacedCustom[cpu].basicCustomScore = 0
-                }
+    //https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+    function LightenDarkenColor(col, amt) {
+        let usePound = false;
+        if (col[0] == "#") {
+            col = col.slice(1);
+            usePound = true;
+        }
+        let num = parseInt(col, 16);
 
-                if (replacedCustom[cpu].partCustomRanking < 0) {
-                    replacedCustom[cpu].partCustomRanking = 0
-                }
-                basicScore.push(replacedCustom[cpu].basicCustomScore)
-                partRanking.push(replacedCustom[cpu].partCustomRanking)
-            } else {
-                if (replacedCustom[cpu].basicCPUScore < 0) {
-                    replacedCustom[cpu].basicCPUScore = 0
-                }
+        let r = (num >> 16) + amt;
+        if (r > 255) r = 255;
+        else if (r < 0) r = 0;
 
-                if (replacedCustom[cpu].partRankingScore < 0) {
-                    replacedCustom[cpu].partRankingScore = 0
-                }
-                basicScore.push(replacedCustom[cpu].basicCPUScore)
-                partRanking.push(replacedCustom[cpu].partRankingScore)
-            }
-            frequency.push(replacedCustom[cpu].frequency)
-            maxFrequency.push(replacedCustom[cpu].maxFrequency)
-            defaultMemory.push(replacedCustom[cpu].defaultMemorySpeed)
-            price.push(replacedCustom[cpu].price)
-            Watts.push(replacedCustom[cpu].wattage)
-            fullName.push(replacedCustom[cpu].fullName)
-            level.push(replacedCustom[cpu].level)
-            stv.push(Math.round(replacedCustom[cpu][document.getElementById("ratioTypeFilter").value] / replacedCustom[cpu][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
-        }
-    }
-    if (type == "gpus") {
-        for (gpu in replacedCustom) {
-            price.push(replacedCustom[gpu].price)
-            frequency.push(replacedCustom[gpu].baseCoreClock)
-            level.push(replacedCustom[gpu].level)
-            vram.push(replacedCustom[gpu].vram)
-            maxFrequency.push(replacedCustom[gpu].maxCoreClock)
-            memClock.push(replacedCustom[gpu].baseMemClock)
-            maxMemClock.push(replacedCustom[gpu].maxMemClock)
-            Watts.push(replacedCustom[gpu].watts)
-            basicScore.push(replacedCustom[gpu].singleGPUGraphicsScore)
-            maxBasicScore.push(replacedCustom[gpu].singleGPUMaxGraphicsScore)
-            partRanking.push(replacedCustom[gpu].partRankingScore)
-            fullName.push(replacedCustom[gpu].fullName)
-            dualScore.push(replacedCustom[gpu].doubleGPUGraphicsScore)
-            maxDualScore.push(replacedCustom[gpu].doubleGPUMaxGraphicsScore)
-            stv.push(Math.round(replacedCustom[gpu][document.getElementById("ratioTypeFilter").value] / replacedCustom[gpu][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
-        }
-    }
-    if (type == "ram") {
-        var size = []
-        var pricePerGig = []
-        for (ram in replacedCustom) {
-            price.push(replacedCustom[ram].price)
-            sellPrice.push(replacedCustom[ram].sellPrice)
-            frequency.push(replacedCustom[ram].frequency)
-            maxFrequency.push(replacedCustom[ram].maxFrequency)
-            pricePerGig.push(replacedCustom[ram].pricePerGig)
-            level.push(replacedCustom[ram].level)
-            fullName.push(replacedCustom[ram].fullName)
-            size.push(replacedCustom[ram].totalSizeGB)
-            stv.push(Math.round(replacedCustom[ram][document.getElementById("ratioTypeFilter").value] / replacedCustom[ram][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
-        }
-    }
-    if (type == "mobos") {
-        var M2Slots = []
-        var M2SlotsHeatSink = []
-        for (mobo in replacedCustom) {
-            maxFrequency.push(replacedCustom[mobo].maxMemorySpeed)
-            price.push(replacedCustom[mobo].price)
-            sellPrice.push(replacedCustom[mobo].sellPrice)
-            frequency.push(replacedCustom[mobo].defaultMemorySpeed)
-            level.push(replacedCustom[mobo].level)
-            M2Slots.push(replacedCustom[mobo].m2Slots)
-            M2SlotsHeatSink.push(replacedCustom[mobo].m2SlotsSupportingHeatsinks)
-            fullName.push(replacedCustom[mobo].fullName)
-            stv.push(Math.round(replacedCustom[mobo][document.getElementById("ratioTypeFilter").value] / replacedCustom[mobo][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
-        }
-    }
-    if (type == "storage") {
-        var size = []
-        var transferSpeed = []
-        for (s in replacedCustom) {
-            price.push(replacedCustom[s].price)
-            sellPrice.push(replacedCustom[s].sellPrice)
-            size.push(replacedCustom[s].sizeGB)
-            fullName.push(replacedCustom[s].fullName)
-            level.push(replacedCustom[s].level)
-            transferSpeed.push(replacedCustom[s].speed)
-            stv.push(Math.round(replacedCustom[s][document.getElementById("ratioTypeFilter").value] / replacedCustom[s][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
-        }
+        let b = ((num >> 8) & 0x00FF) + amt;
+        if (b > 255) b = 255;
+        else if (b < 0) b = 0;
+
+        let g = (num & 0x0000FF) + amt;
+        if (g > 255) g = 255;
+        else if (g < 0) g = 0;
+        return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
     }
 
     //Need to make a new chart each time so they doesnt overlap
@@ -237,205 +146,141 @@ function updateGraph(priority, compatibleSort) {
         myChart.destroy();
     }
 
-
-    //the different datasets
-    var dualScoreData = {
-        label: "Dual GPU Score",
-        data: dualScore,
-        hidden: true,
-        backgroundColor: 'rgba(102, 81, 145, 0.5)',
-        borderColor: 'rgba(120,88,186,1)',
-    }
-    var levelData = {
-        label: "Level",
-        data: level,
-        hidden: true,
-        backgroundColor: 'rgba(207, 205, 9, 0.5)',
-        borderColor: 'rgba(224,223,91,1)',
-    }
-    var vramData = {
-        label: "VRAM",
-        data: vram,
-        hidden: true,
-        backgroundColor: 'rgba(255, 124, 67, 0.5)',
-        borderColor: 'rgba(255,144,96,1)',
-    }
-    var memClockData = {
-        label: "Memory Clock",
-        data: memClock,
-        hidden: true,
-        backgroundColor: 'rgba(249, 93, 106, 0.5)',
-        borderColor: 'rgba(249,115,126,1)',
-    }
-    var ocMemClockData = {
-        label: "Max Memory Clock",
-        data: maxMemClock,
-        hidden: true,
-        backgroundColor: 'rgba(250, 81, 52, 0.5)',
-        borderColor: 'rgba(252,117,94,1)',
-    }
-    var ocSingleScoreData = {
-        label: "OC score",
-        data: maxBasicScore,
-        hidden: true,
-        backgroundColor: 'rgba(212, 80, 135, 0.5)',
-        borderColor: 'rgba(230,80,143,1)',
-    }
-    var ocDualScoreData = {
-        label: "OC Dual GPU Score",
-        data: maxDualScore,
-        hidden: true,
-        backgroundColor: 'rgba(191, 67, 174, 0.5)',
-        borderColor: 'rgba(198,71,180,1)',
-    }
-    var freqData = {
-        label: "Frequency",
-        data: frequency,
-        hidden: true,
-        backgroundColor: 'rgba(160, 100, 199, 0.5)',
-        borderColor: 'rgba(122,81,149,1)',
-    }
-    var maxFreqData = {
-        label: "Max Frequency",
-        data: maxFrequency,
-        hidden: true,
-        backgroundColor: 'rgba(215, 80, 160, 0.5)',
-        borderColor: 'rgba(188,80,144,1)',
-    }
-    var defaultMemoryData = {
-        label: "Memory Speed",
-        data: defaultMemory,
-        hidden: true,
-        backgroundColor: 'rgba(255, 49, 91, 0.5)',
-        borderColor: 'rgba(239,86,117,1)',
-    }
-    var priceData = {
-        label: "Price",
-        data: price,
-        hidden: true,
-        backgroundColor: 'rgba(255, 124, 82, 0.5)',
-        borderColor: 'rgba(255,101,52,1)',
-    }
-    var wattageData = {
-        label: "Wattage",
-        data: Watts,
-        hidden: true,
-        backgroundColor: 'rgba(255, 192, 75, 0.5)',
-        borderColor: 'rgba(255,166,0,1)',
-    }
-    var sellPriceData = {
-        label: "Sell price",
-        data: sellPrice,
-        hidden: true,
-        backgroundColor: 'rgba(255, 255, 0, 0.5)',
-        borderColor: 'rgba(200, 200, 0)',
-    }
-    var pricePerGigData = {
-        label: "Price per gigabyte",
-        data: pricePerGig,
-        hidden: true,
-        backgroundColor: 'rgba(191, 67, 174, 0.5)',
-        borderColor: 'rgba(198,71,180,1)',
-    }
-    var sizeData = {
-        label: "Total size (GB)",
-        data: size,
-        hidden: true,
-        backgroundColor: 'rgba(212, 80, 135, 0.5)',
-        borderColor: 'rgba(230,80,143,1)',
-    }
-    var scoreData = {
-        label: "Score",
-        hidden: true,
-        data: basicScore,
-        backgroundColor: 'rgba(0, 143, 209, 0.5)',
-        borderColor: 'rgba(0,63,92,1)',
-    }
-    var partRankingData = {
-        label: "Part Ranking",
-        data: partRanking,
-        hidden: true,
-        backgroundColor: "rgba(79, 111,189,0.5)",
-        borderColor: "rgba(55,76,128,1)",
-    }
-    var m2SlotsData = {
-        label: "M2 Slots",
-        data: M2Slots,
-        hidden: true,
-        backgroundColor: 'rgba(191, 67, 174, 0.5)',
-        borderColor: 'rgba(198,71,180,1)'
-    }
-    var m2SlotsHeatData = {
-        label: "M2 Slots supporting heatsinks",
-        data: M2SlotsHeatSink,
-        hidden: true,
-        backgroundColor: 'rgba(212, 80, 135, 0.5)',
-        borderColor: 'rgba(230,80,143,1)'
-    }
-    var transferSpeedData = {
-        label: "Transfer speed",
-        data: transferSpeed,
-        hidden: true,
-        backgroundColor: "rgba(79, 111,189,0.5)",
-        borderColor: "rgba(55,76,128,1)"
-    }
-    var stvData = {
-        label: document.getElementById("ratioTypeFilter").options[document.getElementById("ratioTypeFilter").selectedIndex].text + " to " + document.getElementById("ratioTypeFilterBis").options[document.getElementById("ratioTypeFilterBis").selectedIndex].text,
-        data: stv,
-        hidden: true,
-        backgroundColor: "rgba(79, 111,189,0.5)",
-        borderColor: "rgba(55,76,128,1)"
-    }
-
-    //The different datasets names are :
-    //dualScoreData, vramData, memClockData, ocMemClockData, ocSingleScoreData, ocDualScoreData, scoreData, partRankingData
-    //levelData, priceData, sellPriceData, freqData, maxFreqData, defaultMemoryData, wattageData, pricePerGigData, sizeData
-    //transferSpeedData, stvData
-
-
     var chartData = {
-        labels: fullName,
+        labels: [],
         datasets: []
     }
 
+    //List the legends color (should loop)
+    var colors = ["#d9b400", "#d8a100", "#d77a00", "#da5a00", "#de3900", "#e11700", "#e4000c", "#e80030", "#eb0055", "#ee007b", "#f200a2", "#f500ca", "#f800f4", "#da00fc", "#b500ff"]
+    var required = []
 
-    //Push different datasets to the chart depending on the type
-
-    if (type == "gpus") {
-        chartData.datasets.push(scoreData, ocSingleScoreData, partRankingData, dualScoreData, ocDualScoreData, freqData, maxFreqData, memClockData, ocMemClockData, priceData, levelData, sellPriceData, wattageData, stvData)
-    }
-    if (type == "cpus") {
-        chartData.datasets.push(scoreData, partRankingData, maxFreqData, defaultMemoryData, priceData, sellPriceData, levelData, wattageData, stvData)
-    }
-    if (type == "ram") {
-        chartData.datasets.push(freqData, maxFreqData, sizeData, pricePerGigData, levelData, priceData, sellPriceData, stvData)
-    }
-    if (type == "mobos") {
-        chartData.datasets.push(freqData, maxFreqData, priceData, sellPriceData, levelData, m2SlotsData, m2SlotsHeatData, stvData)
-    }
-    if (type == "storage") {
-        chartData.datasets.push(sizeData, levelData, priceData, sellPriceData, transferSpeedData, stvData)
-    }
-
-    //reset the legend on type change
-    if (previousType != type) {
-        if (type == "gpus") {
-            legendBase.push("Score", "Part Ranking")
-        }
-        if (type == "cpus") {
-            legendBase.push("Score", "Part Ranking")
-        }
-        if (type == "ram") {
-            legendBase.push("Frequency", "Total size (GB)")
-        }
-        if (type == "mobos") {
-            legendBase.push("Price")
-        }
-        if (type == "storage") {
-            legendBase.push("Transfer speed", "Price")
-        }
+    //Select the right datasets for the current type
+    switch (type) {
+        case "gpus":
+            required.push("price", "baseCoreClock", "level", "vram", "maxCoreClock", "baseMemClock", "maxMemClock", "watts", "singleGPUGraphicsScore", "singleGPUMaxGraphicsScore", "partRankingScore", "doubleGPUGraphicScore", "doubleGPUMaxGraphicsScore", "stv")
+            if (previousType != type) legendBase.push("Score", "Part Ranking")
+            break;
+        case "cpus":
+            required.push("frequency", "maxFrequency", "defaultMemorySpeed", "price", "wattage", "level", "stv", "basicScore", "partRankingScore")
+            if (previousType != type) legendBase.push("Score", "Part Ranking")
+            break;
+        case "ram":
+            required.push("price", "sellPrice", "frequency", "maxFrequency", "pricePerGig", "level", "totalSizeGB", "stv")
+            if (previousType != type) legendBase.push("Freq", "Total Size (GB)")
+            break;
+        case "mobos":
+            required.push("maxMemorySpeed", "price", "sellPrice", "defaultMemorySpeed", "level", "sellPrice", "m2Slots", "m2SlotsSupportingHeatsinks", "stv")
+            if (previousType != type) legendBase.push("Price")
+            break;
+        case "storage":
+            required.push("price", "sellPrice", "sizeGB", "level", "speed", "stv")
+            if (previousType != type) legendBase.push("Transfer Speed", "Price")
+            break;
+        case "coolers":
+            required.push("airFlow", "price", "sellPrice", "Level")
+            if (previousType != type) legendBase.push("Price")
+            break;
     }
 
+    //Convert the name of the data selectionned to the label of the dataset (in the legend)
+    var labelDictionnary = {
+        "price": "Price",
+        "level": "Unlocked at level",
+        "Level": "Unlocked at level",
+        "stv": document.getElementById("ratioTypeFilter").options[document.getElementById("ratioTypeFilter").selectedIndex].text + " to " + document.getElementById("ratioTypeFilterBis").options[document.getElementById("ratioTypeFilterBis").selectedIndex].text,
+        "frequency": "Freq",
+        "maxFrequency": "Max Freq",
+        "defaultMemorySpeed": "Default Mem Freq",
+        "wattage": "Watts consumed",
+        "basicScore": "Score",
+        "partRankingScore": "Part Ranking",
+        "baseCoreClock": "Base Core Clock",
+        "vram": "VRAM (GB)",
+        "maxCoreClock": "Max Core Clock",
+        "baseMemClock": "Base VRAM Clock",
+        "maxMemClock": "Max VRAM Clock",
+        "watts": "Watts consumed",
+        "singleGPUGraphicsScore": "Score",
+        "singleGPUMaxGraphicsScore": "Max Score",
+        "doubleGPUGraphicScore": "Dual Score",
+        "doubleGPUMaxGraphicsScore": "Max Dual Score",
+        "totalSizeGB": "Total Size (GB)",
+        "sellPrice": "Sell Price",
+        "SellPrice": "Sell Price",
+        "m2Slots": "Number of M.2 Slots",
+        "m2SlotsSupportingHeatsinks": "Number of M.2 Slots supporting heatsinks",
+        "pricePerGig": "Price per GB",
+        "sizeGB": "Total Size (GB)",
+        "speed": "Transfer Speed",
+        "Height": "Height (mm)",
+        "airFlow": "Air Flow (CFM)",
+    }
+
+    //Loop around the datasets
+    for (needed in required) {
+        let currentOutput = {}
+        currentOutput.data = []
+
+        //Loop around the parts
+        for (part in replacedCustom) {
+
+            //In case of special instructions
+            switch (required[needed]) {
+                case "stv":
+                    currentOutput.data.push(Math.round(replacedCustom[part][document.getElementById("ratioTypeFilter").value] / replacedCustom[part][document.getElementById("ratioTypeFilterBis").value] * 1000) / 1000)
+                    break;
+                case "basicScore":
+                    if (type != "cpus") {
+                        currentOutput.data.push(replacedCustom[part][required[needed]])
+                        continue
+                    } else if (realTime) {
+                        if (replacedCustom[part].basicCustomScore < 0) {
+                            replacedCustom[part].basicCustomScore = 0
+                        }
+                        currentOutput.data.push(replacedCustom[part].basicCustomScore)
+                    } else {
+                        if (replacedCustom[part].basicCPUScore < 0) {
+                            replacedCustom[part].basicCPUScore = 0
+                        }
+                        currentOutput.data.push(replacedCustom[part].basicCPUScore)
+                    }
+                    break;
+                case "partRankingScore":
+                    if (type != "cpus") {
+                        currentOutput.data.push(replacedCustom[part][required[needed]])
+                        continue
+                    } else if (realTime) {
+                        if (replacedCustom[part].partCustomRanking < 0) {
+                            replacedCustom[part].partCustomRanking = 0
+                        }
+                        currentOutput.data.push(replacedCustom[part].partCustomRanking)
+                    } else {
+                        if (replacedCustom[part].partRankingScore < 0) {
+                            replacedCustom[part].partRankingScore = 0
+                        }
+                        currentOutput.data.push(replacedCustom[part].partRankingScore)
+                    }
+                    break;
+                default:
+                    currentOutput.data.push(replacedCustom[part][required[needed]])
+                    break;
+            }
+
+            //Push the name of the part to the vertical labels, in an if because we only want it on the first loop
+            if (needed == 0) chartData.labels.push(replacedCustom[part].fullName)
+        }
+        currentOutput.hidden = true
+        currentOutput.label = labelDictionnary[required[needed]]
+
+        //Select the color and loop if there's no other one (it doesnt go back to the start, just go back by one each time to get a gradient)
+        let currentColor = needed >= colors.length ? colors[colors.length - (needed - colors.length)] : colors[needed]
+        currentOutput.backgroundColor = setOpacity(currentColor, 0.5)
+        currentOutput.borderColor = LightenDarkenColor(currentColor, -100)
+        chartData.datasets.push(currentOutput)
+    }
+
+    //Show the right legend items
     for (bar in chartData.datasets) {
         chartData.datasets[bar].barPercentage = 0.8
         chartData.datasets[bar].borderWidth = 1
@@ -495,22 +340,18 @@ function updateGraph(priority, compatibleSort) {
 
     //Keep score of the enabled datasets (doesnt work very well)
     var countLegend = function(legend) {
-        console.log(legend.text)
         for (type in legendBase) {
             if (legend.text.toLowerCase() == legendBase[type].toLowerCase()) {
-                var index = legendBase.indexOf(legend.text);
+                let index = legendBase.indexOf(legend.text);
                 if (index > -1) {
                     legendBase.splice(index, 1);
                 }
-                console.log(legendBase)
                 return
             }
         }
         legendBase.push(legend.text)
-        console.log(legendBase)
     }
     previousType = type
-    console.log(previousType)
     scrollToSearch()
 }
 
@@ -518,9 +359,10 @@ function GRAPHupdateDropdown(type) {
     var score = document.getElementById("sortType")
 
     //Changes the filters depending on the type selected
-    if (type == "gpus") {
-        document.getElementById("customCPU").style.display = "none"
-        var numberFiltersChoice = `
+    switch (type) {
+        case "gpus":
+            document.getElementById("customCPU").style.display = "none"
+            var numberFiltersChoice = `
             <option value="price">Price</option>
             <option value="level">Level</option>
             <option value="watts">Wattage</option>
@@ -534,16 +376,16 @@ function GRAPHupdateDropdown(type) {
             <option value="doubleGPUGraphicsScore">Dual GPU score</option>
             <option value="doubleGPUMaxGraphicsScore">OC Dual GPU Score</option>
             <option value="partRankingScore">Part Ranking</option>
-        `
-        var txtFiltersChoice = `
+            `
+            var txtFiltersChoice = `
             <option value="fullName">Name</option>
             <option value="gpuType">Cooling type</option>
             <option value="STV">... to ...</option>
-        `
-    }
-    if (type == "cpus") {
-        document.getElementById("customCPU").style.display = "inline-block"
-        var numberFiltersChoice = `    
+            `
+            break;
+        case "cpus":
+            document.getElementById("customCPU").style.display = "inline-block"
+            var numberFiltersChoice = `    
             <option value="basicCPUScore" selected>Score</option>
             <option value="maxCPUScore">OC Score</option>
             <option value="partRankingScore">Part ranking</option>
@@ -554,17 +396,16 @@ function GRAPHupdateDropdown(type) {
             <option value="wattage">Wattage</option>
             <option value="price">Price</option>
             <option value="level">Level unlock</option>
-        `
-        var txtFiltersChoice = `
+            `
+            var txtFiltersChoice = `
             <option value="manufacturer">Manufacturer</option>
             <option value="cpuSocket">Socket</option>
             <option value="STV">... to ...</option>
-        `
-
-    }
-    if (type == "ram") {
-        document.getElementById("customCPU").style.display = "none"
-        var numberFiltersChoice = `
+            `
+            break;
+        case "ram":
+            document.getElementById("customCPU").style.display = "none"
+            var numberFiltersChoice = `
             <option value="frequency" selected>Frequency</option>
             <option value="maxFreq">Max OC freq</option>
             <option value="pricePerGig">Price per gigabyte</option>
@@ -572,16 +413,15 @@ function GRAPHupdateDropdown(type) {
             <option value="price">Buy price</option>
             <option value="sellPrice">Sell price</option>
             <option value="totalSizeGb">Size</option>
-        `
-        var txtFiltersChoice = `
+            `
+            var txtFiltersChoice = `
             <option value="manufacturer">Manufacturer</option>
             <option value="STV">... to ...</option>
-        `
-
-    }
-    if (type == "mobos") {
-        document.getElementById("customCPU").style.display = "none"
-        var numberFiltersChoice = `
+            `
+            break;
+        case "mobos":
+            document.getElementById("customCPU").style.display = "none"
+            var numberFiltersChoice = `
             <option value="level">Level unlocked</option>
             <option value="price">Buy price</option>
             <option value="sellPrice">Sell price</option>
@@ -590,40 +430,53 @@ function GRAPHupdateDropdown(type) {
             <option value="m2Slots">M.2 Slots number</option>
             <option value="m2SlotsSupportingHeatsinks">M.2 Slots supporting heatsinks</option>
             <option value="ramSlots">RAM slots</option>
-        `
-        var txtFiltersChoice = `
+            `
+            var txtFiltersChoice = `
             <option value="manufacturer">Manufacturer</option>
             <option value="cpuSocket">Socket</option>
             <option value="chipset" selected>Chipset</option>
             <option value="motherboardSize">Motherboard form factor</option>
             <option value="ramType">Ram type</option>
             <option value="STV">... to ...</option>
-        `
-
-    }
-    if (type == "storage") {
-        document.getElementById("customCPU").style.display = "none"
-        var numberFiltersChoice = `
+            `
+            break;
+        case "storage":
+            document.getElementById("customCPU").style.display = "none"
+            var numberFiltersChoice = `
             <option value="level">Level unlocked</option>
             <option value="price">Buy price</option>
             <option value="sellPrice">Sell price</option>
             <option value="size">Total size</option>
             <option value="speed" selected>Transfer speed</option>
-        `
-        var txtFiltersChoice = `
+            `
+            var txtFiltersChoice = `
             <option value="manufacturer">Manufacturer</option>
             <option value="STV">... to ...</option>
-        `
+            `
+            break;
+        case "coolers":
+            document.getElementById("customCPU").style.display = "none"
+            var numberFiltersChoice = `
+            <option value="Level">Level unlocked</option>
+            <option value="price">Buy price</option>
+            <option value="SellPrice">Sell price</option>
+            <option value="Air Flow" selected>Air Flow (CFM)</option>
+            <option value="Height">Height (mm)</option>
+            `
+            var txtFiltersChoice = `
+            <option value="type">Type</option>
+            <option value="manufacturer">Manufacturer</option>
+            <option value="STV">... to ...</option>
+            `
+            break;
 
     }
     score.innerHTML = numberFiltersChoice
     score.innerHTML += txtFiltersChoice
-    document.getElementById("ratioTypeFilter").innerHTML = numberFiltersChoice
-    document.getElementById("ratioTypeFilterBis").innerHTML = numberFiltersChoice
+    document.getElementById("ratioTypeFilter").innerHTML = document.getElementById("ratioTypeFilterBis").innerHTML = numberFiltersChoice
     document.getElementById("ratioTypeFilterBis").value = "price"
-    document.getElementById("sortTypeFilter").innerHTML = score.innerHTML
-    document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
-    document.getElementById("sortTypeFilterBis").value = "level"
+    document.getElementById("sortTypeFilter").innerHTML = document.getElementById("sortTypeFilterBis").innerHTML = score.innerHTML
+    document.getElementById("sortTypeFilterBis").value = type == "coolers" ? "type" : "level"
 }
 
 function GRAPHstore(value) {
@@ -649,10 +502,12 @@ function GRAPHstore(value) {
 }
 
 function showPartDetails(part) {
+    sessionStorage.setItem("currentlyScrolledTo", Number(document.getElementById("scrollNumberIndic").innerText.split(" /")[0]))
     var type = document.getElementById("type").value
     var partDetails = myData[type][part]
-    if (type == "cpus") {
-        var customText = `
+    switch (type) {
+        case "cpus":
+            var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
             <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
             <h3 style="margin: 0px;">CPU</h3>
@@ -689,24 +544,19 @@ function showPartDetails(part) {
                 <br> Sell price : ${partDetails.sellPrice} $
                 <br> Unlockation level : ${partDetails.level}
             </p>
-            </div>
-        `
-    }
-    if (type == "gpus") {
-        /*var cc = partDetails.baseCoreClock
-        var mc = partDetails.baseMemClock
-        var mcc = partDetails.maxCoreClock
-        var mmc = partDetails.maxMemClock
-        <br> Theorical max core frequency (with binning) : ${maxOCGpuCoreClock}
-        <br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
-        var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
-        var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100*/
-        if (partDetails.multiGpu != "None") {
-            var compatibleButton = `<input type="button" value="show ${partDetails.multiGpu} compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, ['${partDetails.multiGpu}', {key: 'maxMultiSize', low: ${partDetails.slotSize}, high: 99,}])">`
-        } else {
-            var compatibleButton = ""
-        }
-        var customText = `
+            </div>`
+            break;
+        case "gpus":
+            /*var cc = partDetails.baseCoreClock
+            var mc = partDetails.baseMemClock
+            var mcc = partDetails.maxCoreClock
+            var mmc = partDetails.maxMemClock
+            <br> Theorical max core frequency (with binning) : ${maxOCGpuCoreClock}
+            <br> Theorical max memory frequency (with binning) : ${maxOCGpuMemClock}                
+            var maxOCGpuCoreClock = mcc + Math.abs(Math.round((mcc - (cc - (mcc - cc)))*0.25) - ((mcc + Math.round((mcc - (cc -  (mcc - cc)))*0.25)%100))) + 100
+            var maxOCGpuMemClock = mcc + Math.abs(Math.round((mmc - (mc - (mmc - mc)))*0.25) - ((mcc + Math.round((mmc - (mc -  (mmc - mc)))*0.25)%100))) + 100*/
+            var compatibleButton = partDetails.multiGpu == "None" ? "" : `<input type="button" value="show ${partDetails.multiGpu} compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, ['${partDetails.multiGpu}', {key: 'maxMultiSize', low: ${partDetails.slotSize}, high: 99,}])">`
+            var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
             <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                 <h3 style="margin: 0px;">GPU</h3>
@@ -751,11 +601,10 @@ function showPartDetails(part) {
                     <br> Sell price : ${partDetails.sellPrice}
                     <br> Unlocked at level : ${partDetails.level}
                 </p>
-            </div>
-        `
-    }
-    if (type == "ram") {
-        var customText = `
+            </div>`
+            break;
+        case "ram":
+            var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                         <h3 style="margin: 0px;">Technical</h3>
@@ -776,11 +625,10 @@ function showPartDetails(part) {
                             <br> Unlocked at level : ${partDetails.level}
                         </p>
                     <input type="button" value="show compatible mobos" onclick="goBack('yes'); document.getElementById('type').value = 'mobos'; updateGraph(true, ['${partDetails.ramType}'])">
-                </div>
-        `
-    }
-    if (type == "mobos") {
-        var customText = `
+                </div>`
+            break;
+        case "mobos":
+            var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                         <h3 style="margin: 0px;">CPU</h3>
@@ -817,11 +665,10 @@ function showPartDetails(part) {
                             ${partDetails.lightning == "None" ? "" : "<br> Lightning : " + partDetails.lightning}
                             ${partDetails.isHEMPart ? "<br> Modded" : ""}
                         </p>
-                </div>
-        `
-    }
-    if (type == "storage") {
-        var customText = `
+                </div>`
+            break
+        case "storage":
+            var customText = `
             <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
                 <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
                 <h3 style="margin: 0px;">Specifications</h3>
@@ -840,8 +687,36 @@ function showPartDetails(part) {
                     <br> Sell price : ${partDetails.sellPrice}
                     <br> Unlocked at level : ${partDetails.level}
                 </p>
-                </div>
-        `
+                </div>`
+            break;
+        case "coolers":
+            var customText = `
+            <h1 style="margin-left: auto; margin-right: auto">${partDetails.fullName}</h1>
+            <div style="text-align: left; vertical-align: top; display: inline-block; font-size: 1.3rem">
+            <h3 style="margin: 0px;">Performance</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Air Flow : ${partDetails.airFlow} CFM
+                ${partDetails.airPressure == undefined || partDetails.airPressure == '' ? '' : `<br> Air Pressure : ${partDetails.airPressure}`}
+                ${partDetails.thickness == 0 || partDetails.thickness == undefined ? `` : `<br> Radiator thickness : ${partDetails.thickness} mm`}
+                <br> Type : ${partDetails.type}
+                ${partDetails.noFan ? '<br> Passive' : ''}
+            </p>
+            <h3 style="margin: 0px;">Specifications</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Lighting : ${partDetails.lighting}
+                ${partDetails.Size == undefined ? '' : `<br> Size : ${partDetails.Size} mm`}
+                ${partDetails.cpuSockets != undefined ? `<br> Supported CPU Sockets : ${partDetails.cpuSockets}` : ''}
+                ${partDetails.Height != undefined && partDetails.Height != 0 ? `<br> Height : ${partDetails.Height} mm` : ''}
+                ${partDetails.isHEMPart ? '<br> Modded' : ''}
+            </p>
+            <h3 style="margin: 0px;">Shop</h3>
+            <p style="margin: 0px; margin-left: 20px">
+                Price : ${partDetails.price} $
+                <br> Sell price : ${partDetails.sellPrice} $
+                <br> Unlocked at level : ${partDetails.Level}
+            </p>
+            </div>`
+            break;
     }
     if (imageExists("imagesBackup/Texture2D/" + partDetails.iconPath + ".png")) {
         customText += `
