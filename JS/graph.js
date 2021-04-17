@@ -158,7 +158,7 @@ function updateGraph(priority, compatibleSort) {
     //Select the right datasets for the current type
     switch (type) {
         case "gpus":
-            required.push("price", "baseCoreClock", "level", "vram", "maxCoreClock", "baseMemClock", "maxMemClock", "watts", "singleGPUGraphicsScore", "singleGPUMaxGraphicsScore", "partRankingScore", "doubleGPUGraphicScore", "doubleGPUMaxGraphicsScore", "stv")
+            required.push("price", "baseCoreClock", "level", "vram", "maxCoreClock", "baseMemClock", "maxMemClock", "watts", "singleGPUGraphicsScore", "singleGPUMaxGraphicsScore", "partRankingScore", "doubleGPUGraphicsScore", "doubleGPUMaxGraphicsScore", "stv")
             if (previousType != type) legendBase.push("Score", "Part Ranking")
             break;
         case "cpus":
@@ -203,7 +203,7 @@ function updateGraph(priority, compatibleSort) {
         "watts": "Watts consumed",
         "singleGPUGraphicsScore": "Score",
         "singleGPUMaxGraphicsScore": "Max Score",
-        "doubleGPUGraphicScore": "Dual Score",
+        "doubleGPUGraphicsScore": "Dual Score",
         "doubleGPUMaxGraphicsScore": "Max Dual Score",
         "totalSizeGB": "Total Size (GB)",
         "sellPrice": "Sell Price",
