@@ -162,7 +162,7 @@ function updateGraph(priority, compatibleSort) {
             if (previousType != type) legendBase.push("Score", "Part Ranking")
             break;
         case "cpus":
-            required.push("frequency", "maxFrequency", "defaultMemorySpeed", "price", "wattage", "level", "stv", "basicScore", "ocScore", "partRankingScore")
+            required.push("frequency", "maxFrequency", "defaultMemorySpeed", "price", "wattage", "level", "stv", "basicScore", "maxCPUScore", "partRankingScore")
             if (previousType != type) legendBase.push("Score", "Part Ranking")
             break;
         case "ram":
@@ -194,7 +194,7 @@ function updateGraph(priority, compatibleSort) {
         "defaultMemorySpeed": "Default Mem Freq",
         "wattage": "Watts consumed",
         "basicScore": "Score",
-        "ocScore": "Max Score",
+        "maxCPUScore": "Max Score",
         "partRankingScore": "Part Ranking",
         "baseCoreClock": "Base Core Clock",
         "vram": "VRAM (GB)",
