@@ -34662,7 +34662,7 @@ CPU
                 }
                 results[fullName].basicCPUScore = Math.floor(
                     (
-                        (results[fullName].coreClockMultiplier * results[fullName].maxFrequency) +
+                        (results[fullName].coreClockMultiplier * results[fullName].frequency) +
                         (results[fullName].memChannelsMultiplier * results[fullName].maxMemoryChannels) +
                         (results[fullName].memClockMultiplier * results[fullName].defaultMemorySpeed) +
                         (results[fullName].finalAdjustment)
@@ -34670,7 +34670,7 @@ CPU
                 )
                 results[fullName].maxCPUScore = Math.floor(
                     (
-                        (results[fullName].coreClockMultiplier * results[fullName].frequency) +
+                        (results[fullName].coreClockMultiplier * results[fullName].maxFrequency) +
                         (results[fullName].memChannelsMultiplier * results[fullName].maxMemoryChannels) +
                         (results[fullName].memClockMultiplier * results[fullName].defaultMemorySpeed) +
                         (results[fullName].finalAdjustment)
