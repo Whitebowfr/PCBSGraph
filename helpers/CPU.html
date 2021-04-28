@@ -34639,7 +34639,7 @@ CPU
 
                 var isHEMPart = !(tableNumber % 2 == 0)
                 var required = ["In Shop", "Price", "SellPrice", "Level", "Chipset", "Series", "Number of dies", "Cores", "Frequency", "Max Freq", "Can Overclock", "Wattage", "Voltage", "Thermal Throttling", "Default Memory Speed", "Max Memory Channels", "CPU Socket", "CoreClockMultiplier", "MemChannelsMultiplier", "MemClockMultiplier", "FinalAdjustment", "Icon Path"]
-                var correspondingNames = ["inShop", "price", "sellPrice", "level", "chipset", "series", "dies", "cores", "frequency", "maxFrequency", "canOverclock", "wattage", "voltage", "thermalThrottling", "defaultMemorySpeed", "maxMemoryChannels", "cpuSocket", "coreClockMultiplier", "memChannelsMultiplier", "memClockMultiplier", "finalAdjustment", "iconPath"]
+                var correspondingNames = ["inShop", "Price", "SellPrice", "level", "chipset", "series", "dies", "cores", "frequency", "maxFrequency", "canOverclock", "wattage", "voltage", "thermalThrottling", "defaultMemorySpeed", "maxMemoryChannels", "cpuSocket", "coreClockMultiplier", "memChannelsMultiplier", "memClockMultiplier", "finalAdjustment", "iconPath"]
                 var fullName = data.rows[row].cells[3].innerText + " " + data.rows[row].cells[5].innerText
                 results[fullName] = {}
                 results[fullName].fullName = fullName
@@ -34657,6 +34657,17 @@ CPU
                             currentData = currentData.split("/")
                             currentData = currentData[currentData.length - 1]
                             break
+                        case "Price":
+                            currentData = data.rows[row].outerHTML.split('"Price"')[1].split(">")[1].split("<")[0]
+                            break
+                        case "SellPrice":
+                            currentData = data.rows[row].outerHTML.split('"SellPrice"')[1]
+                            console.log(currentData)
+                            currentData = currentData.split(">")[1]
+                            console.log(currentData)
+                            currentData = currentData.split("<")[0]
+                            break
+
                     }
                     results[fullName][correspondingNames[item]] = currentData
                 }
