@@ -18109,7 +18109,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_Colorful_iGame_GeForce_RTX_2060_Ultra_OC-V",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "Colorful iGame GeForce RTX 2070 Ultra OC-V": {
             "fullName": "Colorful iGame GeForce RTX 2070 Ultra OC-V",
@@ -18138,7 +18138,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_Colorful_iGame_GeForce_RTX_2070_Ultra_OC-V",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "Colorful iGame GeForce RTX 2070 Vulcan X OC-V": {
             "fullName": "Colorful iGame GeForce RTX 2070 Vulcan X OC-V",
@@ -18167,7 +18167,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_Colorful_IGame_GeForce_RTX_2070_Vulcan_X_OC_V",
-            "slotSize": 0
+            "slotSize": 3
         },
         "Colorful iGame GeForce RTX 2070 SUPER Vulcan X OC-V": {
             "fullName": "Colorful iGame GeForce RTX 2070 SUPER Vulcan X OC-V",
@@ -18225,7 +18225,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_COLORFUL_IGAME_GEFORCE_RTX_3090_ADVANCED_OC_V",
-            "slotSize": 0
+            "slotSize": 3
         },
         "Colorful GeForce RTX 3080 NB 10G-V": {
             "fullName": "Colorful GeForce RTX 3080 NB 10G-V",
@@ -18254,7 +18254,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_COLORFUL_GEFORCE_RTX_3080_NB_10G-V",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "Colorful iGame GeForce RTX 2060 SUPER Ultra-V": {
             "fullName": "Colorful iGame GeForce RTX 2060 SUPER Ultra-V",
@@ -18283,7 +18283,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_COLORFUL_IGAME_GEFORCE_RTX_2060_SUPER_ULTRA-V",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "Colorful GeForce RTX 3090 NB-V": {
             "fullName": "Colorful GeForce RTX 3090 NB-V",
@@ -18312,7 +18312,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_COLORFUL_GEFORCE_RTX_3090_NB_V",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "Colorful iGame GeForce RTX 2070 SUPER Vulcan OC-V": {
             "fullName": "Colorful iGame GeForce RTX 2070 SUPER Vulcan OC-V",
@@ -18573,7 +18573,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_Colorful_iGame_GeForce_RTX_2060_Ultra",
-            "slotSize": 0
+            "slotSize": 2
         },
         "EVGA GeForce GTX 1080 Ti K|NGP|N GAMING": {
             "fullName": "EVGA GeForce GTX 1080 Ti K|NGP|N GAMING",
@@ -19240,7 +19240,7 @@
             "gpuType": "Air",
             "lights": "N/A",
             "iconPath": "EVGA_GEFORCE_GTX_1660_TI_XC",
-            "slotSize": 0
+            "slotSize": 3
         },
         "EVGA GeForce GTX 1080 GAMING": {
             "fullName": "EVGA GeForce GTX 1080 GAMING",
@@ -22720,7 +22720,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_MSI_Radeon_RX_6900_XT_GAMING_X_TRIO_16G",
-            "slotSize": 0
+            "slotSize": 2.2
         },
         "MSI GeForce GTX 1050 Ti GAMING X 4G": {
             "fullName": "MSI GeForce GTX 1050 Ti GAMING X 4G",
@@ -22778,7 +22778,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_MSI_Radeon_RX_6900_XT_GAMING_X_TRIO_16G",
-            "slotSize": 0
+            "slotSize": 2.2
         },
         "MSI Radeon RX 6800 GAMING TRIO 16G": {
             "fullName": "MSI Radeon RX 6800 GAMING TRIO 16G",
@@ -22807,7 +22807,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_MSI_RADEON_RX_6800_XT_GAMING_X_TRIO",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "MSI Radeon RX 6800 GAMING X TRIO 16G": {
             "fullName": "MSI Radeon RX 6800 GAMING X TRIO 16G",
@@ -22836,7 +22836,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_MSI_RADEON_RX_6800_XT_GAMING_X_TRIO",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "MSI Radeon RX 6800 XT GAMING TRIO 16G": {
             "fullName": "MSI Radeon RX 6800 XT GAMING TRIO 16G",
@@ -22865,7 +22865,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_MSI_RADEON_RX_6800_XT_GAMING_X_TRIO",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "MSI Radeon RX 6800 XT GAMING X TRIO 16G": {
             "fullName": "MSI Radeon RX 6800 XT GAMING X TRIO 16G",
@@ -22894,7 +22894,7 @@
             "gpuType": "Air",
             "lights": "RGB",
             "iconPath": "GPU_MSI_RADEON_RX_6800_XT_GAMING_X_TRIO",
-            "slotSize": 0
+            "slotSize": 2.5
         },
         "NVIDIA GeForce GTX 1060 Founders Edition": {
             "fullName": "NVIDIA GeForce GTX 1060 Founders Edition",
@@ -24286,7 +24286,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_Reference_3080",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3090 | Corsair Hydro X Series XG7 REFERENCE RGB": {
             "fullName": "CORSAIR GeForce RTX 3090 | Corsair Hydro X Series XG7 REFERENCE RGB",
@@ -24315,7 +24315,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_Reference_3090",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR Radeon RX 6800 XT | Corsair Hydro Series XG7 RGB": {
             "fullName": "CORSAIR Radeon RX 6800 XT | Corsair Hydro Series XG7 RGB",
@@ -24344,7 +24344,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_RX_SERIES_GPU_Water_Block_6800_XT",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR Radeon RX 6900 XT | Corsair Hydro Series XG7 RGB": {
             "fullName": "CORSAIR Radeon RX 6900 XT | Corsair Hydro Series XG7 RGB",
@@ -24373,7 +24373,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_RX_SERIES_GPU_Water_Block_6900_XT",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3080 FE | Corsair Hydro X Series XG7 RGB": {
             "fullName": "CORSAIR GeForce RTX 3080 FE | Corsair Hydro X Series XG7 RGB",
@@ -24402,7 +24402,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_GPU_Water_Block_3080_FE",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3090 FE | Corsair Hydro X Series XG7 RGB": {
             "fullName": "CORSAIR GeForce RTX 3090 FE | Corsair Hydro X Series XG7 RGB",
@@ -24431,7 +24431,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_GPU_Water_Block_3090_FE",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3080 | Corsair Hydro X Series XG7 VENTUS RGB": {
             "fullName": "CORSAIR GeForce RTX 3080 | Corsair Hydro X Series XG7 VENTUS RGB",
@@ -24460,7 +24460,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_VENTUS_GPU_Water_Block_3080",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3090 | Corsair Hydro X Series XG7 VENTUS RGB": {
             "fullName": "CORSAIR GeForce RTX 3090 | Corsair Hydro X Series XG7 VENTUS RGB",
@@ -24489,7 +24489,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_VENTUS_GPU_Water_Block_3090",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3070 | Corsair Hydro X Series XG7 STRIX RGB": {
             "fullName": "CORSAIR GeForce RTX 3070 | Corsair Hydro X Series XG7 STRIX RGB",
@@ -24518,7 +24518,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_STRIX_GPU_Water_Block_3070",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3080 | Corsair Hydro X Series XG7 STRIX RGB": {
             "fullName": "CORSAIR GeForce RTX 3080 | Corsair Hydro X Series XG7 STRIX RGB",
@@ -24547,7 +24547,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_STRIX_GPU_Water_Block_3080",
-            "slotSize": 0
+            "slotSize": 2
         },
         "CORSAIR GeForce RTX 3090 | Corsair Hydro X Series XG7 STRIX RGB": {
             "fullName": "CORSAIR GeForce RTX 3090 | Corsair Hydro X Series XG7 STRIX RGB",
@@ -24576,7 +24576,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_CORSAIR_Hydro_X_Series_XG7_RGB_30_SERIES_STRIX_GPU_Water_Block_3090",
-            "slotSize": 0
+            "slotSize": 2
         },
         "EVGA GeForce RTX 2080 Ti FTW3 ULTRA HYDRO COPPER GAMING": {
             "fullName": "EVGA GeForce RTX 2080 Ti FTW3 ULTRA HYDRO COPPER GAMING",
@@ -24692,7 +24692,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_EVGA_GEFORCE_RTX_3080_FTW3_ULTRA_HYDRO_COPPER_GAMING",
-            "slotSize": 0
+            "slotSize": 1.2
         },
         "EVGA GeForce RTX 3090 FTW3 ULTRA HYDRO COPPER GAMING": {
             "fullName": "EVGA GeForce RTX 3090 FTW3 ULTRA HYDRO COPPER GAMING",
@@ -24721,7 +24721,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_EVGA_GEFORCE_RTX_3090_FTW3_ULTRA_HYDRO_COPPER_GAMING",
-            "slotSize": 0
+            "slotSize": 1.2
         },
         "EVGA GeForce RTX 3080 XC3 ULTRA HYDRO COPPER GAMING": {
             "fullName": "EVGA GeForce RTX 3080 XC3 ULTRA HYDRO COPPER GAMING",
@@ -24750,7 +24750,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_EVGA_GEFORCE_RTX_3080_XC3_ULTRA_HYDRO_COPPER_GAMING",
-            "slotSize": 0
+            "slotSize": 1.5
         },
         "EVGA GeForce RTX 3090 XC3 ULTRA HYDRO COPPER GAMING": {
             "fullName": "EVGA GeForce RTX 3090 XC3 ULTRA HYDRO COPPER GAMING",
@@ -24779,7 +24779,7 @@
             "gpuType": "Water",
             "lights": "RGB",
             "iconPath": "GPU_EVGA_GEFORCE_RTX_3090_XC3_ULTRA_HYDRO_COPPER_GAMING",
-            "slotSize": 0
+            "slotSize": 1.5
         },
         "GIGABYTE AORUS GeForce RTX 2080 Ti XTREME WATERFORCE WB 11G": {
             "fullName": "GIGABYTE AORUS GeForce RTX 2080 Ti XTREME WATERFORCE WB 11G",
@@ -37601,6 +37601,85 @@
             "lightning": "None",
             "iconPath": "MB_EVGA_X299_Dark"
         },
+        "EVGA Z490 FTW WIFI": {
+            "isHEMPart": false,
+            "fullName": "EVGA Z490 FTW WIFI",
+            "manufacturer": "EVGA",
+            "partName": "Z490 FTW WIFI",
+            "inShop": "Yes",
+            "price": 450,
+            "sellPrice": 150,
+            "level": 32.9,
+            "cpuSocket": "LGA 1200",
+            "chipset": "Z490",
+            "motherboardSize": "S-ATX",
+            "memorySpeedSteps": [
+                "2400",
+                "2600",
+                "2800",
+                "3000",
+                "3200",
+                "3600",
+                "3800",
+                "4000",
+                "4200",
+                "4400"
+            ],
+            "defaultMemorySpeed": 2933,
+            "maxMemorySpeed": 4400,
+            "ramType": "DDR4",
+            "supportSLI": "Yes",
+            "supportCrossfire": "Yes",
+            "maxMultiSize": 3,
+            "canOverclock": "Yes",
+            "m2Slots": 2,
+            "m2SlotsSupportingHeatsinks": 2,
+            "sataSlotsUsable": 6,
+            "ramSlots": 4,
+            "sataSlots": 6,
+            "lightning": "RGB",
+            "iconPath": "MB_EVGA_Z490_FTW_WIFI"
+        },
+        "EVGA Z490 DARK": {
+            "isHEMPart": false,
+            "fullName": "EVGA Z490 DARK",
+            "manufacturer": "EVGA",
+            "partName": "Z490 DARK",
+            "inShop": "Yes",
+            "price": 600,
+            "sellPrice": 200,
+            "level": 32.9,
+            "cpuSocket": "LGA 1200",
+            "chipset": "Z490",
+            "motherboardSize": "E-ATX",
+            "memorySpeedSteps": [
+                "2400",
+                "2600",
+                "2800",
+                "3000",
+                "3200",
+                "3600",
+                "3800",
+                "4000",
+                "4200",
+                "4600",
+                "4800"
+            ],
+            "defaultMemorySpeed": 2933,
+            "maxMemorySpeed": 4800,
+            "ramType": "DDR4",
+            "supportSLI": "Yes",
+            "supportCrossfire": "Yes",
+            "maxMultiSize": 3,
+            "canOverclock": "Yes",
+            "m2Slots": 2,
+            "m2SlotsSupportingHeatsinks": 2,
+            "sataSlotsUsable": 6,
+            "ramSlots": 2,
+            "sataSlots": 6,
+            "lightning": "None",
+            "iconPath": "MB_EVGA_Z490_DARK"
+        },
         "GIGABYTE Z370 AORUS Gaming 7": {
             "isHEMPart": false,
             "fullName": "GIGABYTE Z370 AORUS Gaming 7",
@@ -39628,6 +39707,58 @@
             "sataSlots": 6,
             "lightning": "None",
             "iconPath": "MB_MSI_MPG_X570_GAMING_PLUS"
+        },
+        "MSI MPG B550 Gaming EDGE Wifi": {
+            "isHEMPart": false,
+            "fullName": "MSI MPG B550 Gaming EDGE Wifi",
+            "manufacturer": "MSI",
+            "partName": "MPG B550 Gaming EDGE Wifi",
+            "inShop": "Yes",
+            "price": 190,
+            "sellPrice": 63,
+            "level": 32.3,
+            "cpuSocket": "AM4",
+            "chipset": "B550",
+            "motherboardSize": "S-ATX",
+            "memorySpeedSteps": [
+                "1866",
+                "2133",
+                "2400",
+                "2667",
+                "2800",
+                "2933",
+                "3000",
+                "3066",
+                "3200",
+                "3466",
+                "3600",
+                "3733",
+                "3866",
+                "4000",
+                "4133",
+                "4266",
+                "4400",
+                "4466",
+                "4533",
+                "4600",
+                "4866",
+                "5000",
+                "5100"
+            ],
+            "defaultMemorySpeed": 3200,
+            "maxMemorySpeed": 5100,
+            "ramType": "DDR4",
+            "supportSLI": "Yes",
+            "supportCrossfire": "Yes",
+            "maxMultiSize": 3,
+            "canOverclock": "Yes",
+            "m2Slots": 2,
+            "m2SlotsSupportingHeatsinks": 1,
+            "sataSlotsUsable": 6,
+            "ramSlots": 4,
+            "sataSlots": 6,
+            "lightning": "RGB",
+            "iconPath": "MB_MSI_MPG_B550_GAMING_EDGE_WIFI"
         },
         "MSI X399 Gaming Pro Carbon AC": {
             "isHEMPart": false,
@@ -52850,6 +52981,21 @@
             "sellPrice": 25,
             "price": 25
         },
+        "ARCTIC Freezer 50": {
+            "fullName": "ARCTIC Freezer 50",
+            "type": "Air Cooler",
+            "isHEMPart": false,
+            "airFlow": 100,
+            "cpuSockets": "AM4, LGA 1151 (Coffee Lake), LGA 1151 (Kaby Lake), LGA 1151 (Skylake), LGA 1200, LGA 2011-V3, LGA 2066, ",
+            "Height": 165,
+            "lighting": "RGB",
+            "iconPath": "AC_ARCTIC_FREEZER_50",
+            "noFan": "No",
+            "Type": "Air Cooling",
+            "Level": 28.6,
+            "sellPrice": 28,
+            "price": 28
+        },
         "ARCTIC Freezer 33 eSports Edition (Red)": {
             "fullName": "ARCTIC Freezer 33 eSports Edition (Red)",
             "type": "Air Cooler",
@@ -53465,6 +53611,21 @@
             "sellPrice": 15,
             "price": 15
         },
+        "GamerStorm ASSASSIN III": {
+            "fullName": "GamerStorm ASSASSIN III",
+            "type": "Air Cooler",
+            "isHEMPart": false,
+            "airFlow": 100,
+            "cpuSockets": "AM3+, AM4, FM2, FM2+, LGA 1151 (Coffee Lake), LGA 1151 (Kaby Lake), LGA 1151 (Skylake), LGA 1200, LGA 2011-V3, LGA 2066, TR4, sTRX4, ",
+            "Height": 165,
+            "lighting": "N/A",
+            "iconPath": "AC_GamerStorm_ASSASSIN_Ⅲ",
+            "noFan": "No",
+            "Type": "Air Cooling",
+            "Level": 29.8,
+            "sellPrice": 43,
+            "price": 43
+        },
         "EVGA ACX mITX": {
             "fullName": "EVGA ACX mITX",
             "type": "Air Cooler",
@@ -53862,6 +54023,86 @@
             "lighting": "RGB",
             "iconPath": "LC_Antec_Neptune_240",
             "sellPrice": 47
+        },
+        "ARCTIC Liquid Freezer 2 series 120mm": {
+            "fullName": "ARCTIC Liquid Freezer 2 series 120mm",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 27,
+            "Level": 28.5,
+            "Height": 98,
+            "airFlow": 70,
+            "airPressure": "",
+            "Size": 120,
+            "thickness": 0.38,
+            "Slots": 1,
+            "lighting": "N/A",
+            "iconPath": "LC_Arctic_Liquid_Freezer_2_series_120",
+            "sellPrice": 27
+        },
+        "ARCTIC Liquid Freezer 2 series 240mm": {
+            "fullName": "ARCTIC Liquid Freezer 2 series 240mm",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 37,
+            "Level": 28.5,
+            "Height": 98,
+            "airFlow": 105,
+            "airPressure": "",
+            "Size": 120,
+            "thickness": 0.38,
+            "Slots": 2,
+            "lighting": "N/A",
+            "iconPath": "LC_Arctic_Liquid_Freezer_2_series_240",
+            "sellPrice": 37
+        },
+        "ARCTIC Liquid Freezer 2 series 280mm": {
+            "fullName": "ARCTIC Liquid Freezer 2 series 280mm",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 40,
+            "Level": 28.5,
+            "Height": 98,
+            "airFlow": 110,
+            "airPressure": "",
+            "Size": 140,
+            "thickness": 0.38,
+            "Slots": 2,
+            "lighting": "N/A",
+            "iconPath": "LC_Arctic_Liquid_Freezer_2_series_280",
+            "sellPrice": 40
+        },
+        "ARCTIC Liquid Freezer 2 series 360mm": {
+            "fullName": "ARCTIC Liquid Freezer 2 series 360mm",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 53,
+            "Level": 28.5,
+            "Height": 98,
+            "airFlow": 145,
+            "airPressure": "",
+            "Size": 120,
+            "thickness": 0.38,
+            "Slots": 3,
+            "lighting": "N/A",
+            "iconPath": "LC_Arctic_Liquid_Freezer_2_series_360",
+            "sellPrice": 53
+        },
+        "ARCTIC Liquid Freezer 2 series 420mm": {
+            "fullName": "ARCTIC Liquid Freezer 2 series 420mm",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 60,
+            "Level": 28.5,
+            "Height": 98,
+            "airFlow": 150,
+            "airPressure": "",
+            "Size": 140,
+            "thickness": 0.38,
+            "Slots": 3,
+            "lighting": "N/A",
+            "iconPath": "LC_Arctic_Liquid_Freezer_2_series_420",
+            "sellPrice": 60
         },
         "be quiet! Silent Loop 120mm": {
             "fullName": "be quiet! Silent Loop 120mm",
@@ -54294,6 +54535,38 @@
             "lighting": "N/A",
             "iconPath": "Fractal_Design_Celsius_S36",
             "sellPrice": 63
+        },
+        "In Win SR24 PRO": {
+            "fullName": "In Win SR24 PRO",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 43,
+            "Level": 30.01,
+            "Height": 100,
+            "airFlow": 115,
+            "airPressure": "",
+            "Size": 120,
+            "thickness": 0.27,
+            "Slots": 2,
+            "lighting": "RGB",
+            "iconPath": "LC_InWin_SR24_Pro_AIO",
+            "sellPrice": 43
+        },
+        "In Win SR36 PRO": {
+            "fullName": "In Win SR36 PRO",
+            "type": "Liquid Cooler",
+            "isHEMPart": false,
+            "price": 53,
+            "Level": 30.01,
+            "Height": 100,
+            "airFlow": 150,
+            "airPressure": "",
+            "Size": 120,
+            "thickness": 0.27,
+            "Slots": 3,
+            "lighting": "RGB",
+            "iconPath": "LC_Inwin_SR36_Pro_AIO",
+            "sellPrice": 53
         },
         "MSI MAG Coreliquid 240R": {
             "fullName": "MSI MAG Coreliquid 240R",
@@ -56049,6 +56322,48 @@
             "Level": 30.01,
             "price": 20,
             "sellPrice": 20
+        },
+        "GamerStorm TF120S (Black)": {
+            "fullName": "GamerStorm TF120S (Black)",
+            "type": "Case Fan",
+            "isHEMPart": false,
+            "airFlow": 40,
+            "airPressure": 1.67,
+            "lighting": "N/A",
+            "iconPath": "FAN_CAS_GamerStorm_TF120S_Case_Fan",
+            "thickness": 0,
+            "Size": 120,
+            "Level": 28.01,
+            "price": 13,
+            "sellPrice": 13
+        },
+        "GamerStorm TF120S (White)": {
+            "fullName": "GamerStorm TF120S (White)",
+            "type": "Case Fan",
+            "isHEMPart": false,
+            "airFlow": 40,
+            "airPressure": 1.67,
+            "lighting": "N/A",
+            "iconPath": "FAN_CAS_GamerStorm_TF120S_Case_Fan_MS_White",
+            "thickness": 0,
+            "Size": 120,
+            "Level": 28.01,
+            "price": 13,
+            "sellPrice": 13
+        },
+        "GamerStorm MF120 GT": {
+            "fullName": "GamerStorm MF120 GT",
+            "type": "Case Fan",
+            "isHEMPart": false,
+            "airFlow": 40,
+            "airPressure": 1.67,
+            "lighting": "RGB",
+            "iconPath": "FAN_CASE_GamerStorm_MF120_GT_Case_Fan",
+            "thickness": 0,
+            "Size": 120,
+            "Level": 28.01,
+            "price": 13,
+            "sellPrice": 13
         },
         "EKWB EK-Vardar EVO 140S BB": {
             "fullName": "EKWB EK-Vardar EVO 140S BB",
