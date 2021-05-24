@@ -408,7 +408,7 @@ function GRAPHupdateDropdown(type) {
             document.getElementById("customCPU").style.display = "none"
             var numberFiltersChoice = `
             <option value="frequency" selected>Frequency</option>
-            <option value="maxFreq">Max OC freq</option>
+            <option value="maxFrequency">Max OC freq</option>
             <option value="pricePerGig">Price per gigabyte</option>
             <option value="level">Level unlock</option>
             <option value="price">Buy price</option>
@@ -461,7 +461,7 @@ function GRAPHupdateDropdown(type) {
             <option value="Level">Level unlocked</option>
             <option value="price">Buy price</option>
             <option value="SellPrice">Sell price</option>
-            <option value="Air Flow" selected>Air Flow (CFM)</option>
+            <option value="airFlow" selected>Air Flow (CFM)</option>
             <option value="Height">Height (mm)</option>
             `
             var txtFiltersChoice = `
