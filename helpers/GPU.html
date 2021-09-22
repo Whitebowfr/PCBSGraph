@@ -58471,178 +58471,187 @@ Water Cooled GPU
             "Real Slot Size": 2
         }
     }
-    function getResults(includeHEMParts) {
+    function insertDecimal(number, dec) {
+        if (parseInt(dec) == 1) {
+            return parseInt(number)
+        } else {
+            return parseInt(number) + (parseInt(dec) / 100)
+        }
+    }
+
+    function getResults() {
+
         var results = {}
+
         // Process tables
         var data
         for (tableNumber = 0; tableNumber < 4; tableNumber++) {
-            // Skip HEM parts, if desired
-            if ((tableNumber == 2 || tableNumber == 3) && !includeHEMParts)
-                continue
+
             data = document.getElementsByTagName('table')[tableNumber]
             for (row = 0; row < data.rows.length; row++) {
+
                 // Skip blank rows
                 if (data.rows[row].cells[1] == undefined) {
                     continue
                 }
-                // Skip schema rows
-                if (data.rows[row].cells[3].innerText == "Manufacturer") {
-                    continue
-                }
+
                 // Skip "Dummy" part rows
                 if (data.rows[row].cells[2].innerText == "Dummy") {
                     continue
                 }
-                // Skip rows that are not in the game
-                if (data.rows[row].cells[6].innerText != "Yes") {
-                    continue
-                }
+
                 // Skip "//" Water GPU rows
                 if (data.rows[row].cells[0].innerText == "//") {
                     continue
                 }
+
+                // Skip schema rows
+                if (data.rows[row].cells[3].innerText == "Manufacturer") {
+                    continue
+                }
+
                 var airGpu = (tableNumber == 0 || tableNumber == 2)
                 var gpuType = (airGpu ? "Air" : "Water")
+
+                var GT1SCC = Number(data.rows[row].cells[53].innerText) // SCC = Single Core Clock [multiplier]
+                var GT1SMC = Number(data.rows[row].cells[54].innerText) // SMC = Single Memory Clock [multiplier]
+                var GT1SBA = Number(data.rows[row].cells[55].innerText) // SBA = Single Benchmark Adjustment etc...
+                var GT2SCC = Number(data.rows[row].cells[56].innerText)
+                var GT2SMC = Number(data.rows[row].cells[57].innerText)
+                var GT2SBA = Number(data.rows[row].cells[58].innerText)
+
+                var GT1DCC = Number(data.rows[row].cells[59].innerText)
+                var GT1DMC = Number(data.rows[row].cells[60].innerText)
+                var GT1DBA = Number(data.rows[row].cells[61].innerText)
+                var GT2DCC = Number(data.rows[row].cells[62].innerText)
+                var GT2DMC = Number(data.rows[row].cells[63].innerText)
+                var GT2DBA = Number(data.rows[row].cells[64].innerText)
+
+                if (data.rows[row].cells[37].innerText == "Yes") {
+                    if (data.rows[row].cells[36].innerText == "Yes") {
+                        var multiGpu = "SLI"
+                    } else {
+                        var multiGpu = "Crossfire"
+                    }
+                } else {
+                    var multiGpu = "None"
+                }
+
+                var iconPath = data.rows[row].cells[48].innerText
+                if (iconPath == "" || iconPath == null) {
+                    iconPath = data.rows[row].cells[47].innerText
+                }
+                if (iconPath == "No" || iconPath == "Yes") {
+                    iconPath = data.rows[row].cells[49].innerText
+                }
+                iconPath = iconPath.split("/")
+                iconPath = iconPath[iconPath.length - 1]
+
+
                 var manufacturer = data.rows[row].cells[3].innerText
                 var partName = data.rows[row].cells[5].innerText
                 var inShop = data.rows[row].cells[9].innerText
                 var price = Number(data.rows[row].cells[10].innerText)
                 var sellPrice = Number(data.rows[row].cells[11].innerText)
-                var level = Number(data.rows[row].cells[12].innerText)
+                var level = insertDecimal(data.rows[row].cells[12].innerText, data.rows[row].cells[13].innerText)
                 var chipset = data.rows[row].cells[20].innerText
+                var chipsetBrand = data.rows[row].cells[21].innerText
+                var chipsetSeries = data.rows[row].cells[22].innerText
                 var vramGB = Number(data.rows[row].cells[25].innerText)
-                var slotSize = Number(data.rows[row].cells[26].innerText)
                 var wattage = Number(data.rows[row].cells[27].innerText)
-                var length = Number(data.rows[row].cells[28].innerText)
+                var scoreToValue = Number(data.rows[row].cells[29].innerText)
+                var thermalThrottling = Number(data.rows[row].cells[40].innerText)
                 var baseCoreClockFreq = Number(data.rows[row].cells[31].innerText)
                 var baseMemClockFreq = Number(data.rows[row].cells[32].innerText)
-                var doubleGPUSLI = data.rows[row].cells[36].innerText
-                var doubleGPUSupported = data.rows[row].cells[37].innerText
+                var maxCoreClockFreq = Number(data.rows[row].cells[41].innerText)
+                var maxMemClockFreq = Number(data.rows[row].cells[42].innerText)
+                var singleGPUGraphicsScore = getGPUScore(GT1SCC, GT1SMC, GT1SBA, GT2SCC, GT2SMC, GT2SBA, baseCoreClockFreq, baseMemClockFreq)
+                var singleGPUMaxGraphicsScore = getGPUScore(GT1SCC, GT1SMC, GT1SBA, GT2SCC, GT2SMC, GT2SBA, maxCoreClockFreq, maxMemClockFreq)
+                var dualGPUGraphicsScore = getGPUScore(GT1DCC, GT1DMC, GT1DBA, GT2DCC, GT2DMC, GT2DBA, baseCoreClockFreq, baseMemClockFreq)
+                var dualGPUMaxGraphicsScore = getGPUScore(GT1DCC, GT1DMC, GT1DBA, GT2DCC, GT2DMC, GT2DBA, maxCoreClockFreq, maxMemClockFreq)
+                var lightning = gpuType == "Water" ? data.rows[row].cells[51].innerText : data.rows[row].cells[50].innerText
                 var assetPath = (airGpu ? data.rows[row].cells[47].innerText : data.rows[row].cells[49].innerText)
-                var GT1SingleCoreClockMultiplier = Number(data.rows[row].cells[53].innerText)
-                var GT1SingleMemClockMultiplier = Number(data.rows[row].cells[54].innerText)
-                var GT1SingleBenchmarkAdjustment = Number(data.rows[row].cells[55].innerText)
-                var GT2SingleCoreClockMultiplier = Number(data.rows[row].cells[56].innerText)
-                var GT2SingleMemClockMultiplier = Number(data.rows[row].cells[57].innerText)
-                var GT2SingleBenchmarkAdjustment = Number(data.rows[row].cells[58].innerText)
-                var GT1DualCoreClockMultiplier = Number(data.rows[row].cells[59].innerText)
-                var GT1DualMemClockMultiplier = Number(data.rows[row].cells[60].innerText)
-                var GT1DualBenchmarkAdjustment = Number(data.rows[row].cells[61].innerText)
-                var GT2DualCoreClockMultiplier = Number(data.rows[row].cells[62].innerText)
-                var GT2DualMemClockMultiplier = Number(data.rows[row].cells[63].innerText)
-                var GT2DualBenchmarkAdjustment = Number(data.rows[row].cells[64].innerText)
-                var assetPathNormalized = assetPath.replaceAll("\\", "/")
+
+
                 var isHEMPart = (tableNumber == 2 || tableNumber == 3)
                 var fullName = manufacturer + " " + partName
-                var realSlotSize = (airGpu ? gpuModelsAir[assetPathNormalized]["Real Slot Size"] : gpuModelsWater[assetPathNormalized]["Real Slot Size"])
-                var multiGPU
-                if (doubleGPUSupported == 'No') {
-                    multiGPU = null
-                } else if (
-                    doubleGPUSupported == 'Yes' &&
-                    doubleGPUSLI == 'Yes') {
-                    multiGPU = "SLI"
-                } else if (
-                    doubleGPUSupported == 'Yes' &&
-                    doubleGPUSLI == 'No') {
-                    multiGPU = "CrossFire"
+                var assetPathNormalized = assetPath.replaceAll("\\", "/")
+
+                if (gpuModelsAir[assetPathNormalized] == undefined && gpuModelsWater[assetPathNormalized] == undefined) {
+                    var realSlotSize = 0
+                } else {
+                    var realSlotSize = (airGpu ? gpuModelsAir[assetPathNormalized]["Real Slot Size"] : gpuModelsWater[assetPathNormalized]["Real Slot Size"])
                 }
+
                 var partRankingScore =
-                    Math.floor
+                    Math.floor(
+                        (
+                            (GT1SCC * baseCoreClockFreq) +
+                            (GT1SMC * baseMemClockFreq) +
+                            (GT1SBA)
+                        ) * 100
+                    )
+
+                function getGPUScore(GT1SCC, GT1SMC, GT1SBA, GT2SCC, GT2SMC, GT2SBA, freq, memFreq) {
+                    return Math.floor(
+                        164 /
                         (
                             (
-                                (GT1SingleCoreClockMultiplier * baseCoreClockFreq) +
-                                (GT1SingleMemClockMultiplier * baseMemClockFreq) +
-                                (GT1SingleBenchmarkAdjustment)
-                            ) * 100
-                        )
-                var singleGPUGraphicsScore =
-                    Math.floor
-                        (
-                            164 /
+                                0.5 /
+                                (
+                                    (GT1SCC * freq) +
+                                    (GT1SMC * memFreq) +
+                                    (GT1SBA)
+                                )
+                            ) +
                             (
+                                0.5 /
                                 (
-                                    0.5 /
-                                    (
-                                        (GT1SingleCoreClockMultiplier * baseCoreClockFreq) +
-                                        (GT1SingleMemClockMultiplier * baseMemClockFreq) +
-                                        (GT1SingleBenchmarkAdjustment)
-                                    )
-                                ) +
-                                (
-                                    0.5 /
-                                    (
-                                        (GT2SingleCoreClockMultiplier * baseCoreClockFreq) +
-                                        (GT2SingleMemClockMultiplier * baseMemClockFreq) +
-                                        (GT2SingleBenchmarkAdjustment)
-                                    )
+                                    (GT2SCC * freq) +
+                                    (GT2SMC * memFreq) +
+                                    (GT2SBA)
                                 )
                             )
                         )
-                var doubleGPUGraphicsScore =
-                    Math.floor
-                        (
-                            164 /
-                            (
-                                (
-                                    0.5 /
-                                    (
-                                        (GT1DualCoreClockMultiplier * baseCoreClockFreq) +
-                                        (GT1DualMemClockMultiplier * baseMemClockFreq) +
-                                        (GT1DualBenchmarkAdjustment)
-                                    )
-                                ) +
-                                (
-                                    0.5 /
-                                    (
-                                        (GT2DualCoreClockMultiplier * baseCoreClockFreq) +
-                                        (GT2DualMemClockMultiplier * baseMemClockFreq) +
-                                        (GT2DualBenchmarkAdjustment)
-                                    )
-                                )
-                            )
-                        )
+                    )
+                }
+
                 results[fullName] = {}
-                results[fullName].isHEMPart = isHEMPart
                 results[fullName].fullName = fullName
-                results[fullName].gpuType = gpuType
-                results[fullName].manufacturer = manufacturer
-                results[fullName].partName = partName
-                results[fullName].inShop = inShop
+                results[fullName].isHEMPart = isHEMPart
                 results[fullName].price = price
                 results[fullName].sellPrice = sellPrice
                 results[fullName].level = level
                 results[fullName].chipset = chipset
-                results[fullName].vramGB = vramGB
-                results[fullName].slotSize = slotSize
-                results[fullName].wattage = wattage
-                results[fullName].length = length
-                results[fullName].baseCoreClockFreq = baseCoreClockFreq
-                results[fullName].baseMemClockFreq = baseMemClockFreq
-                results[fullName].assetPath = assetPath
-                results[fullName].GT1SingleCoreClockMultiplier = GT1SingleCoreClockMultiplier
-                results[fullName].GT1SingleMemClockMultiplier = GT1SingleMemClockMultiplier
-                results[fullName].GT1SingleBenchmarkAdjustment = GT1SingleBenchmarkAdjustment
-                results[fullName].GT2SingleCoreClockMultiplier = GT2SingleCoreClockMultiplier
-                results[fullName].GT2SingleMemClockMultiplier = GT2SingleMemClockMultiplier
-                results[fullName].GT2SingleBenchmarkAdjustment = GT2SingleBenchmarkAdjustment
-                results[fullName].GT1DualCoreClockMultiplier = GT1DualCoreClockMultiplier
-                results[fullName].GT1DualMemClockMultiplier = GT1DualMemClockMultiplier
-                results[fullName].GT1DualBenchmarkAdjustment = GT1DualBenchmarkAdjustment
-                results[fullName].GT2DualCoreClockMultiplier = GT2DualCoreClockMultiplier
-                results[fullName].GT2DualMemClockMultiplier = GT2DualMemClockMultiplier
-                results[fullName].GT2DualBenchmarkAdjustment = GT2DualBenchmarkAdjustment
-                results[fullName].realSlotSize = realSlotSize
-                results[fullName].multiGPU = multiGPU
+                results[fullName].chipsetBrand = chipsetBrand
+                results[fullName].chipsetSeries = chipsetSeries
+                results[fullName].multiGpu = multiGpu
+                results[fullName].vram = vramGB
+                results[fullName].watts = wattage
+                results[fullName].stv = scoreToValue
+                results[fullName].thermalThrottling = thermalThrottling
+                results[fullName].baseCoreClock = baseCoreClockFreq
+                results[fullName].baseMemClock = baseMemClockFreq
+                results[fullName].maxCoreClock = maxCoreClockFreq
+                results[fullName].maxMemClock = maxMemClockFreq
                 results[fullName].partRankingScore = partRankingScore
                 results[fullName].singleGPUGraphicsScore = singleGPUGraphicsScore
-                results[fullName].doubleGPUGraphicsScore = doubleGPUGraphicsScore
+                results[fullName].singleGPUMaxGraphicsScore = singleGPUMaxGraphicsScore
+                results[fullName].doubleGPUGraphicsScore = dualGPUGraphicsScore
+                results[fullName].doubleGPUMaxGraphicsScore = dualGPUMaxGraphicsScore
+                results[fullName].isInShop = inShop
+                results[fullName].gpuType = gpuType
+                results[fullName].lights = lightning
+                results[fullName].iconPath = iconPath
+                results[fullName].slotSize = realSlotSize
             }
         }
+
         return results
     }
 
     setTimeout(function() {
-        document.write(JSON.stringify(getResults(true)))
-    }, 1000)
+        document.write(JSON.stringify(getResults()));
+        console.log("e")
+    }, 2000)
 </script>
