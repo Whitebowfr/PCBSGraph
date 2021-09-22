@@ -42395,103 +42395,81 @@ CPU
     </tr>
 </table>
 <script>
-    function getResults(includeHEMParts) {
-        var results = {}
-        // Process tables
-        var data
-        for (tableNumber = 0; tableNumber < 2; tableNumber++) {
-            // Skip HEM parts, if desired
-            if (tableNumber == 1 && !includeHEMParts)
-                continue
-            data = document.getElementsByTagName('table')[tableNumber]
-            for (row = 0; row < data.rows.length; row++) {
-                // Skip blank rows
-                if (data.rows[row].cells[1] == undefined) {
-                    continue
-                }
-                // Skip schema rows
-                if (data.rows[row].cells[3].innerText == "Manufacturer") {
-                    continue
-                }
-                // Skip "Dummy" part rows
-                if (data.rows[row].cells[2].innerText == "Dummy") {
-                    continue
-                }
-                // Skip rows that are not in the game
-                if (data.rows[row].cells[6].innerText != "Yes") {
-                    continue
-                }
-                var manufacturer = data.rows[row].cells[3].innerText
-                var partName = data.rows[row].cells[5].innerText
-                var inShop = data.rows[row].cells[9].innerText
-                var price = Number(data.rows[row].cells[10].innerText)
-                var sellPrice = Number(data.rows[row].cells[11].innerText)
-                var level = Number(data.rows[row].cells[12].innerText)
-                var frequency = Number(data.rows[row].cells[19].innerText)
-                var cores = Number(data.rows[row].cells[22].innerText)
-                var canOverclock = data.rows[row].cells[23].innerText
-                var wattage = Number(data.rows[row].cells[24].innerText)
-                //var voltage = Number(data.rows[row].cells[25].innerText)
-                var defaultMemorySpeed = Number(data.rows[row].cells[26].innerText)
-                var maxMemoryChannels = Number(data.rows[row].cells[35].innerText)
-                var cpuSocket = data.rows[row].cells[37].innerText
-                var coreClockMultiplier = Number(data.rows[row].cells[47].innerText)
-                var memChannelsMultiplier = Number(data.rows[row].cells[48].innerText)
-                var memClockMultiplier = Number(data.rows[row].cells[49].innerText)
-                var finalAdjustment = Number(data.rows[row].cells[50].innerText)
-                var isHEMPart = (tableNumber == 1)
-                var fullName = manufacturer + " " + partName
-                var chipset = data.rows[row].cells[17].innerText
-                var partRankingScore =
-                    Math.floor
-                        (
-                            (
-                                (coreClockMultiplier * frequency) +
-                                (memChannelsMultiplier * maxMemoryChannels) +
-                                (memClockMultiplier * defaultMemorySpeed) +
-                                (finalAdjustment)
-                            ) * 100
-                        )
-                var basicCPUScore =
-                    Math.floor
-                        (
-                            (
-                                (coreClockMultiplier * frequency) +
-                                (memChannelsMultiplier * maxMemoryChannels) +
-                                (memClockMultiplier * defaultMemorySpeed) +
-                                (finalAdjustment)
-                            ) * 298
-                        )
-                results[fullName] = {}
-                results[fullName].isHEMPart = isHEMPart
-                results[fullName].fullName = fullName
-                results[fullName].chipset = chipset
-                results[fullName].manufacturer = manufacturer
-                results[fullName].partName = partName
-                results[fullName].inShop = inShop
-                results[fullName].price = price
-                results[fullName].sellPrice = sellPrice
-                results[fullName].level = level
-                results[fullName].frequency = frequency
-                results[fullName].basicCPUScore = basicCPUScore
-                results[fullName].canOverclock = canOverclock
-                results[fullName].wattage = wattage
-                //results[fullName].voltage = voltage
-                results[fullName].defaultMemorySpeed = defaultMemorySpeed
-                results[fullName].maxMemoryChannels = maxMemoryChannels
-                results[fullName].cpuSocket = cpuSocket
-                results[fullName].coreClockMultiplier = coreClockMultiplier
-                results[fullName].memChannelsMultiplier = memChannelsMultiplier
-                results[fullName].memClockMultiplier = memClockMultiplier
-                results[fullName].finalAdjustment = finalAdjustment
-                results[fullName].partRankingScore = partRankingScore
-                results[fullName].cores = cores
-            }
-        }
-        return results
-    }
+    function getResultsOptimized() { //161ms and 40 lines instead of 175ms and 84 lines
 
-    setTimeout(function() {
-        document.write(JSON.stringify(getResults(true)))
-    }, 1000)
+var results = {}
+
+var data
+for (tableNumber = 0; tableNumber < 2; tableNumber++) {
+
+    data = document.getElementsByTagName('table')[tableNumber]
+    for (row = 0; row < data.rows.length; row++) {
+
+        if (data.rows[row].cells[1] == undefined) continue
+
+        if (data.rows[row].cells[2].innerText == "Dummy") continue
+
+        if (data.rows[row].cells[3].innerText == "Manufacturer") continue
+
+        var isHEMPart = !(tableNumber % 2 == 0)
+        var required = ["In Shop", "Price", "SellPrice", "Level", "Chipset", "Series", "Number of dies", "Cores", "Frequency", "Max Freq", "Can Overclock", "Wattage", "Voltage", "Thermal Throttling", "Default Memory Speed", "Max Memory Channels", "CPU Socket", "CoreClockMultiplier", "MemChannelsMultiplier", "MemClockMultiplier", "FinalAdjustment", "Icon Path"]
+        var correspondingNames = ["inShop", "price", "sellPrice", "level", "chipset", "series", "dies", "cores", "frequency", "maxFrequency", "canOverclock", "wattage", "voltage", "thermalThrottling", "defaultMemorySpeed", "maxMemoryChannels", "cpuSocket", "coreClockMultiplier", "memChannelsMultiplier", "memClockMultiplier", "finalAdjustment", "iconPath"]
+        var fullName = data.rows[row].cells[3].innerText + " " + data.rows[row].cells[5].innerText
+        results[fullName] = {}
+        results[fullName].fullName = fullName
+        results[fullName].isHEMPart = isHEMPart
+        for (item in required) {
+            var currentItem = required[item]
+            var currentData = data.rows[row].outerHTML.split(currentItem + '">').pop().split("\n")[0].replace("</td>", "")
+            currentData = !isNaN(currentData) && !isNaN(parseFloat(currentData)) ? Number(currentData) : currentData
+            switch (currentItem) {
+                case "Level":
+                    currentData += Number(data.rows[row].outerHTML.split('Percent Through">').pop().split("\n")[0].replace("</td>", "")) / 100;
+                    break
+                case "Icon Path":
+                    if (currentData == "" || currentData == undefined) currentData = data.rows[row].outerHTML.split('Asset Path">').pop().split("\n")[0].replace("</td>", "")
+                    currentData = currentData.split("/")
+                    currentData = currentData[currentData.length - 1]
+                    break
+                case "Price":
+                    currentData = Number(data.rows[row].outerHTML.split('"Price"')[1].split(">")[1].split("<")[0])
+                    break
+                case "SellPrice":
+                    currentData = data.rows[row].outerHTML.split('"SellPrice"')[1]
+                    console.log(currentData)
+                    currentData = currentData.split(">")[1]
+                    console.log(currentData)
+                    currentData = Number(currentData.split("<")[0])
+                    break
+
+            }
+            results[fullName][correspondingNames[item]] = currentData
+        }
+        results[fullName].basicCPUScore = Math.floor(
+            (
+                (results[fullName].coreClockMultiplier * results[fullName].frequency) +
+                (results[fullName].memChannelsMultiplier * results[fullName].maxMemoryChannels) +
+                (results[fullName].memClockMultiplier * results[fullName].defaultMemorySpeed) +
+                (results[fullName].finalAdjustment)
+            ) * 298
+        )
+        results[fullName].maxCPUScore = Math.floor(
+            (
+                (results[fullName].coreClockMultiplier * results[fullName].maxFrequency) +
+                (results[fullName].memChannelsMultiplier * results[fullName].maxMemoryChannels) +
+                (results[fullName].memClockMultiplier * results[fullName].defaultMemorySpeed) +
+                (results[fullName].finalAdjustment)
+            ) * 298
+        )
+        results[fullName].maxVoltage = Math.floor(results[fullName].voltage * 110 / 100 * 1.05 * 100) / 100
+        results[fullName].partRankingScore = Math.floor(results[fullName].basicCPUScore / 298 * 100)
+    }
+}
+
+return results
+}
+
+setTimeout(function() {
+document.write(JSON.stringify(getResultsOptimized()))
+}, 1000)
 </script>
