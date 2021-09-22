@@ -42428,6 +42428,7 @@ CPU
                 var sellPrice = Number(data.rows[row].cells[11].innerText)
                 var level = Number(data.rows[row].cells[12].innerText)
                 var frequency = Number(data.rows[row].cells[19].innerText)
+                var cores = Number(data.rows[row].cells[22].innerText)
                 var canOverclock = data.rows[row].cells[23].innerText
                 var wattage = Number(data.rows[row].cells[24].innerText)
                 //var voltage = Number(data.rows[row].cells[25].innerText)
@@ -42482,6 +42483,7 @@ CPU
                 results[fullName].memClockMultiplier = memClockMultiplier
                 results[fullName].finalAdjustment = finalAdjustment
                 results[fullName].partRankingScore = partRankingScore
+                results[fullName].cores = cores
             }
         }
         return results
