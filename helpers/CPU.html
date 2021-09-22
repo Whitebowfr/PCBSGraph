@@ -42441,6 +42441,7 @@ CPU
                 var finalAdjustment = Number(data.rows[row].cells[50].innerText)
                 var isHEMPart = (tableNumber == 1)
                 var fullName = manufacturer + " " + partName
+                var chipset = data.rows[row].cells[17].innerText
                 var partRankingScore =
                     Math.floor
                         (
@@ -42464,6 +42465,7 @@ CPU
                 results[fullName] = {}
                 results[fullName].isHEMPart = isHEMPart
                 results[fullName].fullName = fullName
+                results[fullName].chipset = chipset
                 results[fullName].manufacturer = manufacturer
                 results[fullName].partName = partName
                 results[fullName].inShop = inShop
