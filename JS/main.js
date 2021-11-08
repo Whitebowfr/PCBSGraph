@@ -12,7 +12,7 @@ function readTextFile(file, callback) { //stole this from stackoverflow, works l
 var myData
 
 //Open the data file, and also fire the whole code (since it's asynchronous, we must wait for it to load)
-readTextFile("helpers/data.json", function(text) {
+readTextFile("https://raw.githubusercontent.com/Whitebowfr/PCBSGraph/gh-pages/helpers/data.json", function(text) {
     myData = JSON.parse(text);
     updateGraph('')
 });
